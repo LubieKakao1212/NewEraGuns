@@ -1,19 +1,18 @@
-package com.LubieKakao1212.modularguns.data.behaviour;
+package com.LubieKakao1212.modularguns.data.behaviour.data;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import software.bernie.shadowed.fasterxml.jackson.core.JsonProcessingException;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractBehaviour {
+public abstract class AbstractBehaviourData {
 
-    protected Map<String, Object> vars = new HashMap<>();
+    protected transient Map<String, Object> vars = new HashMap<>();
     
-    public static abstract class Adapter<T extends AbstractBehaviour> extends TypeAdapter<T> {
+    public static abstract class Adapter<T extends AbstractBehaviourData> extends TypeAdapter<T> {
 
         private final Gson gson;
 
@@ -61,13 +60,6 @@ public abstract class AbstractBehaviour {
             return null;
         }
 
-        /*
-         *
-         * @param name
-         * @param reader
-         * @return true if field was consumed
-        protected abstract boolean handleField(String name, JsonReader reader);
-*/
         protected abstract T createInstance(JsonObject obj);
 
         protected abstract void finishParse(JsonObject obj);
