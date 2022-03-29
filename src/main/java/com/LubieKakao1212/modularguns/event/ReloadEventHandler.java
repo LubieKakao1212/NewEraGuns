@@ -13,6 +13,7 @@ public class ReloadEventHandler {
     @SubscribeEvent
     public static void OnAddReloadListener(AddReloadListenerEvent reloadListenerEvent) {
         reloadListenerEvent.addListener(AllTheData.gunTypes);
+        reloadListenerEvent.addListener(AllTheData.hitBehaviourDataCache);
     }
 
 }

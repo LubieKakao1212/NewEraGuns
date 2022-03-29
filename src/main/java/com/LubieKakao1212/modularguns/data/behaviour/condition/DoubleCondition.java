@@ -19,4 +19,14 @@ public class DoubleCondition implements IVariableCondition<Double> {
         return flag;
     }
 
+    @Override
+    public String toString() {
+        return "DoubleCondition{" +
+                "eqlo=" + eqlo +
+                ", eqgr=" + eqgr +
+                ", lo=" + lo +
+                ", gr=" + gr +
+                ", eq=" + eq +
+                '}';
+    }
 }

@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,57 +13,47 @@ public abstract class AbstractBehaviourData {
 
     protected transient Map<String, Object> vars = new HashMap<>();
     
-    public static abstract class Adapter<T extends AbstractBehaviourData> extends TypeAdapter<T> {
-
-        private final Gson gson;
-
-        public Adapter(Gson gson) {
-            this.gson = gson;
-        }
-
+    public static abstract class Deserializer<T extends AbstractBehaviourData> implements JsonDeserializer<T> {
         @Override
-        public void write(JsonWriter out, T value) throws IOException {
-            //We do not need to write stuff
-        }
-
-        @Override
-        public T read(JsonReader reader) throws IOException {
-            reader.beginObject();
-
-            JsonObject json = gson.fromJson(reader, JsonObject.class);
-
-            T behaviour = createInstance(json);
+        public T deserialize(JsonElement jsonIn, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject json = jsonIn.getAsJsonObject();
+            T behaviourData = createInstance(json, context);
 
             for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
                 if (entry.getValue().isJsonPrimitive()) {
                     JsonPrimitive primitive = (JsonPrimitive) entry.getValue();
 
                     if(primitive.isString()) {
-                        behaviour.vars.put(entry.getKey(), primitive.getAsString());
+                        behaviourData.vars.put(entry.getKey(), primitive.getAsString());
                         continue;
                     }
 
                     if(primitive.isBoolean()) {
-                        behaviour.vars.put(entry.getKey(), primitive.getAsBoolean());
+                        behaviourData.vars.put(entry.getKey(), primitive.getAsBoolean());
                         continue;
                     }
 
                     if(primitive.isNumber()){
-                        behaviour.vars.put(entry.getKey(), primitive.getAsDouble());
+                        behaviourData.vars.put(entry.getKey(), primitive.getAsDouble());
                         continue;
                     }
                 }
             }
 
-            finishParse(json);
-
-            reader.endObject();
-            return null;
+            finishParse(json, context, behaviourData);
+            return behaviourData;
         }
 
-        protected abstract T createInstance(JsonObject obj);
+        protected abstract T createInstance(JsonObject obj, JsonDeserializationContext context);
 
-        protected abstract void finishParse(JsonObject obj);
+        protected abstract void finishParse(JsonObject obj, JsonDeserializationContext context, T behaviourData);
 
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractBehaviourData{" +
+                "vars=" + vars +
+                '}';
     }
 }

@@ -1,13 +1,17 @@
 package com.LubieKakao1212.modularguns.data;
 
+import com.LubieKakao1212.modularguns.data.behaviour.data.HitBehaviourData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class AllTheData {
 
     public static final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(HitBehaviourData.class, new HitBehaviourData.Deserializer())
             .create();
 
-    public static final DataCache<GunType> gunTypes = new DataCache<>(gson, "guns", GunType.class);
+    public static final DataCache<GunType> gunTypes = new DataCache<>(gson, "guns/type", GunType.class);
+
+    public static final DataCache<HitBehaviourData> hitBehaviourDataCache = new DataCache<>(gson, "guns/behaviour/hit", HitBehaviourData.class);
 
 }

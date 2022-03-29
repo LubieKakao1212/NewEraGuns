@@ -1,6 +1,7 @@
 package com.LubieKakao1212.modularguns.data.behaviour.condition;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -24,7 +25,7 @@ public class ConditionSet {
         return true;
     }
 
-    public static ConditionSet fromJson(Gson gson, JsonObject jsonIn, Map<String, Object> existingVars) {
+    public static ConditionSet fromJson(JsonDeserializationContext context, JsonObject jsonIn, Map<String, Object> existingVars) {
         Map<String, IVariableCondition> conditions = new HashMap<>();
         for(Map.Entry<String, JsonElement> entry : jsonIn.entrySet()) {
             String variableId = entry.getKey();
@@ -35,7 +36,7 @@ public class ConditionSet {
             Class c = var.getClass();
 
             if (c == Double.class) {
-                IVariableCondition doubleCondition = gson.fromJson(entry.getValue(), DoubleCondition.class);
+                IVariableCondition doubleCondition = context.deserialize(entry.getValue(), DoubleCondition.class);
                 conditions.put(variableId, doubleCondition);
             } else if (c == String.class) {
                 // TODO
@@ -45,5 +46,12 @@ public class ConditionSet {
         }
 
         return new ConditionSet(conditions);
+    }
+
+    @Override
+    public String toString() {
+        return "ConditionSet{" +
+                "conditions=" + conditions +
+                '}';
     }
 }

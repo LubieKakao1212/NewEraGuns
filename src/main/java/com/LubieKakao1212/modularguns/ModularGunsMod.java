@@ -1,10 +1,13 @@
 package com.LubieKakao1212.modularguns;
 
+import com.LubieKakao1212.modularguns.data.AllTheData;
 import com.LubieKakao1212.modularguns.init.Register;
+import net.minecraft.util.profiling.jfr.event.WorldLoadFinishedEvent;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -50,11 +53,18 @@ public class ModularGunsMod
     {
 
     }
+
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
 
     }
+
+    @SubscribeEvent
+    public void OnWorldStarted(WorldEvent.Load event) {
+        LOGGER.info(AllTheData.hitBehaviourDataCache);
+    }
+
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
     // Event bus for receiving Registry Events)

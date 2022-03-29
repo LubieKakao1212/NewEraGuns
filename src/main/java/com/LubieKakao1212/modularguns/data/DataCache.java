@@ -38,4 +38,11 @@ public class DataCache<T> extends SimpleJsonResourceReloadListener {
     public T get(ResourceLocation id) {
         return content.get(id);
     }
+
+    @Override
+    public String toString() {
+        return "DataCache{" +
+                "content=" + content +
+                '}';
+    }
 }
