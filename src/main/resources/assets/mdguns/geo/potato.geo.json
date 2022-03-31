@@ -1,0 +1,57 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.PotatoCannon",
+				"texture_width": 16,
+				"texture_height": 16,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "Barrel",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{
+							"origin": [-8, -2, -2],
+							"size": [8, 4, 4],
+							"pivot": [0, -5, 0],
+							"rotation": [0, -90, 0],
+							"uv": {
+								"north": {"uv": [0, 6], "uv_size": [8, 4]},
+								"east": {"uv": [12, 6], "uv_size": [4, 4]},
+								"south": {"uv": [0, 6], "uv_size": [8, 4]},
+								"west": {"uv": [12, 6], "uv_size": [4, 4]},
+								"up": {"uv": [8, 10], "uv_size": [-8, -4]},
+								"down": {"uv": [8, 10], "uv_size": [-8, -4]}
+							}
+						}
+					]
+				},
+				{
+					"name": "Magazine",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{
+							"origin": [0, -3, -3],
+							"size": [8, 6, 6],
+							"pivot": [0, -5, 0],
+							"rotation": [0, -90, 0],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [8, 6]},
+								"east": {"uv": [10, 0], "uv_size": [6, 6]},
+								"south": {"uv": [0, 0], "uv_size": [8, 6]},
+								"west": {"uv": [10, 0], "uv_size": [6, 6]},
+								"up": {"uv": [8, 6], "uv_size": [-8, -6]},
+								"down": {"uv": [8, 6], "uv_size": [-8, -6]}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

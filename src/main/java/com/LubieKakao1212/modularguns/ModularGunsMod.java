@@ -2,13 +2,16 @@ package com.LubieKakao1212.modularguns;
 
 import com.LubieKakao1212.modularguns.data.AllTheData;
 import com.LubieKakao1212.modularguns.init.Register;
+import com.LubieKakao1212.modularguns.resources.MdGunsResources;
 import net.minecraft.util.profiling.jfr.event.WorldLoadFinishedEvent;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -19,6 +22,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib3.GeckoLib;
+import software.bernie.geckolib3.resource.ResourceListener;
 
 import java.util.stream.Collectors;
 
@@ -26,6 +30,7 @@ import java.util.stream.Collectors;
 @Mod("mdguns")
 public class ModularGunsMod
 {
+    public static final String MODID = "mdguns";
     public static final Logger LOGGER = LogManager.getLogger();
 
     public ModularGunsMod() {
@@ -33,6 +38,8 @@ public class ModularGunsMod
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
+
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> MdGunsResources::register);
 
         MinecraftForge.EVENT_BUS.register(this);
 

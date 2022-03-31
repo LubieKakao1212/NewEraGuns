@@ -12,8 +12,6 @@ public interface IGun {
 
     void shoot(Entity shooter, Vector3d pos, Quaterniond aim);
 
-    ResourceLocation getModelId(ItemStack stack);
-
     List<ItemStack> getAttachments();
 
 }

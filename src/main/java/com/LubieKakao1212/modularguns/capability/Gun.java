@@ -1,5 +1,7 @@
 package com.LubieKakao1212.modularguns.capability;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -13,11 +15,6 @@ public class Gun implements IGun {
     @Override
     public void shoot(Entity shooter, Vector3d pos, Quaterniond aim) {
 
-    }
-
-    @Override
-    public ResourceLocation getModelId(ItemStack stack) {
-        return null;
     }
 
     @Override

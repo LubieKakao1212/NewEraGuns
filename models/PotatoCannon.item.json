@@ -2,24 +2,24 @@
   "credit": "Made with Blockbench",
   "parent": "builtin/entity",
   "display": {
-    "firstperson_lefthand": {
+    "thirdperson_righthand": {
       "translation": [
         0,
-        2,
+        -2,
         0
       ]
     },
-    "gui": {
-      "rotation": [
-        90,
-        -45,
+    "thirdperson_lefthand": {
+      "translation": [
+        0,
+        -2,
         0
       ]
     },
     "head": {
       "translation": [
         0,
-        8.75,
+        10.5,
         0
       ]
     },

@@ -10,7 +10,7 @@ public class AllTheData {
             .registerTypeAdapter(HitBehaviourData.class, new HitBehaviourData.Deserializer())
             .create();
 
-    public static final DataCache<GunType> gunTypes = new DataCache<>(gson, "guns/type", GunType.class);
+    public static final DataCache<GunTypeInfo> gunTypes = new DataCache<>(gson, "guns/type", GunTypeInfo.class);
 
     public static final DataCache<HitBehaviourData> hitBehaviourDataCache = new DataCache<>(gson, "guns/behaviour/hit", HitBehaviourData.class);
 
