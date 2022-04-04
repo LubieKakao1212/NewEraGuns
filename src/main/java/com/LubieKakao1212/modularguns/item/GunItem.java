@@ -65,7 +65,7 @@ public class GunItem extends Item implements IAnimatable, ISyncable {
     public void initializeClient(Consumer<IItemRenderProperties> consumer) {
         super.initializeClient(consumer);
         consumer.accept(new IItemRenderProperties() {
-            private final GunRenderer renderer = new GunRenderer(new ResourceLocation("mdguns:potato"));
+            private final GunRenderer renderer = new GunRenderer();
 
             @Override
             public BlockEntityWithoutLevelRenderer getItemStackRenderer() {

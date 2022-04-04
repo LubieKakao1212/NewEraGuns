@@ -30,7 +30,7 @@ public class GunCapabilityProvider implements ICapabilitySerializable<CompoundTa
         }
         return LazyOptional.empty();
     }
-
+    
     @Override
     public CompoundTag serializeNBT() {
         return new CompoundTag();

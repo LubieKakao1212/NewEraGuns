@@ -4,10 +4,13 @@ import com.LubieKakao1212.modularguns.ModularGunsMod;
 import com.LubieKakao1212.modularguns.capability.GunCaps;
 import com.LubieKakao1212.modularguns.capability.type.IGunType;
 import com.LubieKakao1212.modularguns.item.GunItem;
+import com.LubieKakao1212.modularguns.resources.MdGunsClientCache;
 import com.LubieKakao1212.modularguns.resources.MdGunsResources;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -20,18 +23,12 @@ import java.util.Map;
 
 public class GunRenderer extends GeoItemRenderer<GunItem> {
 
-    private static Map<ResourceLocation, GunModel> modelCache = new HashMap<>();
-    private GunModel defaultModel;
-
-
-    public GunRenderer(ResourceLocation defaultModelId) {
-        super(new GunModel(defaultModelId));
-        defaultModel = (GunModel) modelProvider;
-        modelCache.put(defaultModelId, defaultModel);
+    public GunRenderer() {
+        super(MdGunsClientCache.defaultModel);
     }
 
     @Override
-    public void renderByItem(ItemStack itemStack, ItemTransforms.TransformType transform, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int p_239207_6_) {
+    public void renderByItem(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int p_239207_6_) {
         LazyOptional<IGunType> gun = itemStack.getCapability(GunCaps.GUN_TYPE);
 
         final ResourceLocation[] transformsLocation = {new ResourceLocation(ModularGunsMod.MODID)};
@@ -42,13 +39,42 @@ public class GunRenderer extends GeoItemRenderer<GunItem> {
 
         ItemTransforms transforms = MdGunsResources.getTransforms(transformsLocation[0]);
 
+        PoseStack.Pose firstPose = matrixStack.last();
+        matrixStack.popPose();
+        PoseStack.Pose secondPose = matrixStack.last();
+        matrixStack.pushPose();
         matrixStack.pushPose();
 
-        transforms.getTransform(transform).apply(false, matrixStack);
+        matrixStack.setIdentity();
 
-        super.renderByItem(itemStack, transform, matrixStack, bufferIn, combinedLightIn, p_239207_6_);
+        ItemTransform transform = transforms.getTransform(transformType);
+
+        if(transformType == ItemTransforms.TransformType.FIXED) {
+            matrixStack.mulPoseMatrix(secondPose.pose());
+            transform.apply(false, matrixStack);
+            matrixStack.translate(-0.5, -0.5, -0.5);
+        }else {
+            transform.apply(false, matrixStack);
+            //matrixStack.mulPoseMatrix(secondPose.pose());
+            matrixStack.mulPoseMatrix(firstPose.pose());
+        }
+        /*if(transformType == ItemTransforms.TransformType.GUI) {
+            PoseStack.Pose pose = matrixStack.last();
+
+            Matrix4f matrixTRS = Matrix4f.createTranslateMatrix(transform.translation.x(), transform.translation.y(), transform.translation.z());
+            matrixTRS.multiply(new Quaternion(transform.rotation.x(), transform.rotation.y(), transform.rotation.z(), true));
+            matrixTRS.multiply(Matrix4f.createScaleMatrix(transform.scale.x(), transform.scale.y(), transform.scale.z()));
+
+            pose.pose().multiplyBackward(matrixTRS);
+        }else
+        {
+            transform.apply(false, matrixStack);
+        }
+*/
+        super.renderByItem(itemStack, transformType, matrixStack, bufferIn, combinedLightIn, p_239207_6_);
 
         matrixStack.popPose();
+        matrixStack.mulPoseMatrix(secondPose.pose());
     }
 
     @Override
@@ -61,7 +87,7 @@ public class GunRenderer extends GeoItemRenderer<GunItem> {
             gunType.getGunType().ifPresent((typeInfo) -> modelLocation[0] = typeInfo.getModel());
         });
 
-        GunModel model = resolveModel(modelLocation[0]);
+        GunModel model = MdGunsClientCache.getOrCreateModel(modelLocation[0]);
 
         setModel(model);
 
@@ -71,18 +97,8 @@ public class GunRenderer extends GeoItemRenderer<GunItem> {
         }
         catch (GeckoLibException e)
         {
-            setModel(defaultModel);
+            setModel(MdGunsClientCache.defaultModel);
             super.render(animatable, stack, bufferIn, packedLightIn, itemStack);
         }
-    }
-
-    private GunModel resolveModel(ResourceLocation id) {
-        GunModel model = modelCache.get(id);
-
-        if(model == null) {
-            model = new GunModel(id);
-            modelCache.put(id, model);
-        }
-        return model;
     }
 }

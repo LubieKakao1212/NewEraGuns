@@ -59,8 +59,8 @@ public class MdGunsResources {
                         (location) -> loadAndParse(location, resourceManager, ItemTransforms.class),
                         (location, transform) -> {
                             String path = location.getPath();
-                            int len = path.length() - transformsPath.length() - transformsExtension.length();
-                            int prefix = transformsPath.length();
+                            int prefix = transformsPath.length() + 1;
+                            int len = path.length() - prefix - transformsExtension.length();
 
                             transforms.put(new ResourceLocation(location.getNamespace(), path.substring(prefix, prefix + len)), transform);
                         })
