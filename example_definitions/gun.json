@@ -1,0 +1,50 @@
+{
+    "capabilities": [
+        {
+            "type": "neguns:gun_fe",
+            "max-amount": 5000,
+            "charge-speed": 10
+        }
+    ],
+    "trigger": [
+        {
+            "type": "neguns:conditional",
+            "conditions": [
+                {
+                    "type": "neguns:fe_amount",
+                    "eqgr": 500
+                }
+            ],
+            "trigger-success": [
+                {
+                    "type": "neguns:conditional",
+                    "conditions": [
+                        {
+                            "type":"neguns:fe_amount",
+                            "eqgr": 1000,
+                            "eqlo": 2000
+                        }
+                    ],
+                    "trigger-fail": [
+                        {
+                            "type": "neguns:spawn_bullet",
+                            "bullet-type": "neguns:simple_bullet"
+                        }
+                    ],
+                    "trigger-success": [
+                        {
+                            "type": "neguns:raycast",
+                            "ray-type": "neguns:simple_ray"
+                        }
+                    ]
+                }
+            ],
+            "trigger-fail": [
+                
+            ]
+        },
+        {
+            
+        }
+    ]
+}
