@@ -32,13 +32,6 @@ public class NewEraGunsMod
 
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> NEGunsResources::register);
 
-        MinecraftForge.EVENT_BUS.register(this);
-
         Register.init();
-    }
-
-    @SubscribeEvent
-    public void OnWorldStarted(WorldEvent.Load event) {
-        LOGGER.info(AllTheData.hitBehaviourDataCache);
     }
 }

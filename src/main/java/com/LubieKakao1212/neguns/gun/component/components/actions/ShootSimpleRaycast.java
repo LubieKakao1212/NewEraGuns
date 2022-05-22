@@ -18,9 +18,9 @@ import java.util.List;
 
 public class ShootSimpleRaycast implements IGunComponent {
 
-    private double spread;
-    private float damage;
-    private double range;
+    private double spread = 0;
+    private float damage = 0;
+    private double range = 0;
 
     @Override
     public boolean executeAction(ItemStack gun, EntityChain entityChain, GunState state) {

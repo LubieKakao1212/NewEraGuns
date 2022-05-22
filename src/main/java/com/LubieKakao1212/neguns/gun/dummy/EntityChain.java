@@ -27,8 +27,9 @@ public class EntityChain {
         return chain.get(chain.size() - 1);
     }
 
-    public void add(@NotNull Entity entity) {
+    public EntityChain add(@NotNull Entity entity) {
         chain.add(entity);
+        return this;
     }
 
 }

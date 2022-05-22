@@ -1,3 +1,23 @@
 {
-  "model": "neguns:dual_potato"
+  "model": "neguns:dual_potato",
+  "trigger": [
+    {
+      "type": "neguns:conditional",
+      "conditions": [{
+          "type":"neguns:fe_amount",
+          "condition": {
+            "eqgr": 9000
+          }
+      }],
+      "trigger_success" : {
+        "type": "neguns:raycast_simple",
+        "damage": 1,
+        "range": 10
+      },
+      "trigger_fail": {
+        "type": "neguns:debug",
+        "message": "fail"
+      }
+    }
+  ]
 }

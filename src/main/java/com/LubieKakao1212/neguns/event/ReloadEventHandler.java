@@ -9,9 +9,8 @@ import net.minecraftforge.fml.common.Mod;
 public class ReloadEventHandler {
 
     @SubscribeEvent
-    public static void OnAddReloadListener(AddReloadListenerEvent reloadListenerEvent) {
+    public static void onAddReloadListener(AddReloadListenerEvent reloadListenerEvent) {
         reloadListenerEvent.addListener(AllTheData.gunTypes);
-        reloadListenerEvent.addListener(AllTheData.hitBehaviourDataCache);
     }
 
 }

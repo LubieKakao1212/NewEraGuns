@@ -3,6 +3,7 @@ package com.LubieKakao1212.neguns.data;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -33,6 +34,11 @@ public class DataCache<T> extends SimpleJsonResourceReloadListener {
 
     public T get(ResourceLocation id) {
         return content.get(id);
+    }
+
+    public T getOrDefault(ResourceLocation id, T defaultValue) {
+        T value = content.get(id);
+        return value != null ? value : defaultValue;
     }
 
     @Override
