@@ -182,7 +182,7 @@ public class RaycastUtil {
             addTo.add(
                     new RaycastHit<>(
                             intersections,
-                            new BlockStatePos(blockState, blockPos)
+                            new BlockStatePos(blockState, blockPos, level)
                     )
             );
         }

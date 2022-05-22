@@ -12,7 +12,8 @@
       "trigger_success" : {
         "type": "neguns:raycast_simple",
         "damage": 1,
-        "range": 10
+        "range": 10,
+        "pierce": 5
       },
       "trigger_fail": {
         "type": "neguns:debug",
