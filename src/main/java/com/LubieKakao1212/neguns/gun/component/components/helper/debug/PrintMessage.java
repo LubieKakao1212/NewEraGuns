@@ -19,6 +19,6 @@ public class PrintMessage implements IGunComponent {
             Player player = (Player) entityChain.first();
             player.sendMessage(new TextComponent(message), player.getUUID());
         }
-        return false;
+        return true;
     }
 }

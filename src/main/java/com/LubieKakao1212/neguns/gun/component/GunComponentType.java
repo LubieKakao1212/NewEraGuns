@@ -1,8 +1,8 @@
 package com.LubieKakao1212.neguns.gun.component;
 
 import com.LubieKakao1212.neguns.data.AllTheData;
-import com.LubieKakao1212.neguns.gun.component.components.conditions.FEAmountCondition;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.function.Function;
@@ -23,7 +23,7 @@ public class GunComponentType extends ForgeRegistryEntry<GunComponentType> {
         this.factory = factory;
     }
 
-    public IGunComponent createComponent(JsonElement element) {
+    public IGunComponent createComponent(JsonObject element) {
         return factory.apply(element);
     }
 

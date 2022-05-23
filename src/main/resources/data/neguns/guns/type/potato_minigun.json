@@ -15,10 +15,26 @@
         "range": 10,
         "pierce": 5
       },
-      "trigger_fail": {
-        "type": "neguns:debug",
-        "message": "fail"
-      }
+      "trigger_fail": [
+        {
+          "type": "neguns:debug",
+          "message": "fail"
+        },
+        {
+          "type": "neguns:debug",
+          "message": "second fail"
+        },
+        {
+          "type":"neguns:fe_amount",
+          "condition": {
+            "eqgr": 6000
+          }
+        },
+        {
+          "type": "neguns:debug",
+          "message": "less fail"
+        }
+      ]
     }
   ]
 }
