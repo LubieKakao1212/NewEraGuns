@@ -4,7 +4,7 @@ import com.LubieKakao1212.neguns.NewEraGunsMod;
 import com.LubieKakao1212.neguns.capability.GunCaps;
 import com.LubieKakao1212.neguns.capability.gun.IGun;
 import com.LubieKakao1212.neguns.item.GunItem;
-import com.LubieKakao1212.neguns.resources.NEGunsClientCache;
+import com.LubieKakao1212.neguns.resources.NEGunsDataCache;
 import com.LubieKakao1212.neguns.resources.NEGunsResources;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -14,12 +14,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import software.bernie.geckolib3.geo.exception.GeckoLibException;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 
 public class GunRenderer extends GeoItemRenderer<GunItem> {
 
     public GunRenderer() {
-        super(NEGunsClientCache.defaultModel);
+        super(NEGunsDataCache.FAKE_MODEL);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class GunRenderer extends GeoItemRenderer<GunItem> {
             modelLocation[0] = gunType.getGunType().getModel()
         );
 
-        GunModel model = NEGunsClientCache.getOrCreateModel(modelLocation[0]);
+        GunModel model = NEGunsDataCache.getOrCreateModel(modelLocation[0]);
 
         setModel(model);
 
@@ -81,8 +82,10 @@ public class GunRenderer extends GeoItemRenderer<GunItem> {
         }
         catch (GeckoLibException e)
         {
-            setModel(NEGunsClientCache.defaultModel);
+            setModel(NEGunsDataCache.FAKE_MODEL);
             super.render(animatable, stack, bufferIn, packedLightIn, itemStack);
         }
+
+        setModel(NEGunsDataCache.FAKE_MODEL);
     }
 }

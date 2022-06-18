@@ -26,7 +26,6 @@ import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-@OnlyIn(Dist.CLIENT)
 public class NEGunsResources {
 
     private static final String transformsPath = "models/gun";

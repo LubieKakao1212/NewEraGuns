@@ -4,7 +4,7 @@ import com.LubieKakao1212.neguns.physics.BlockStatePos;
 import com.LubieKakao1212.neguns.physics.RaycastHit;
 import com.LubieKakao1212.neguns.physics.RaycastUtil;
 import com.LubieKakao1212.qulib.math.AimUtil;
-import com.LubieKakao1212.qulib.util.Vector3dUtil;
+import com.LubieKakao1212.qulib.util.joml.Vector3dUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;

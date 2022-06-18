@@ -2,6 +2,7 @@ package com.LubieKakao1212.neguns;
 
 import com.LubieKakao1212.neguns.data.AllTheData;
 import com.LubieKakao1212.neguns.init.Register;
+import com.LubieKakao1212.neguns.network.NEGunsNetwork;
 import com.LubieKakao1212.neguns.resources.NEGunsResources;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,11 +28,16 @@ public class NewEraGunsMod
     public static final String MODID = "neguns";
     public static final Logger LOGGER = LogManager.getLogger();
 
+    public static boolean serverStarted = false;
+
     public NewEraGunsMod() {
         GeckoLib.initialize();
 
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> NEGunsResources::register);
 
+        NEGunsNetwork.init();
+
         Register.init();
     }
+
 }

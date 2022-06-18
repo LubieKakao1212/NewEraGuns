@@ -1,0 +1,19 @@
+{
+  "credit": "Made with Blockbench",
+  "display": {
+    "gui": {
+      "translation": [
+        0,
+        -8,
+        0
+      ]
+    },
+    "fixed": {
+      "translation": [
+        0,
+        -8,
+        0
+      ]
+    }
+  }
+}

@@ -1,6 +1,7 @@
 package com.LubieKakao1212.neguns.capability;
 
 import com.LubieKakao1212.neguns.capability.gun.Gun;
+import com.LubieKakao1212.qulib.capability.energy.InternalEnergyStorage;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -9,8 +10,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.EnergyStorage;
-import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +21,7 @@ public class GunCapabilityProvider implements ICapabilitySerializable<CompoundTa
 
     private LazyOptional<Gun> gunType;
 
-    private LazyOptional<EnergyStorage> energy;
+    private LazyOptional<InternalEnergyStorage> energy;
 
     public GunCapabilityProvider(ResourceLocation gunTypeId, CompoundTag serialized) {
         this.gunTypeId = gunTypeId;
@@ -33,13 +32,13 @@ public class GunCapabilityProvider implements ICapabilitySerializable<CompoundTa
         if(serialized != null) {
             if(serialized.contains(ENERGY_TAG_ID, Tag.TAG_INT)) {
                 final int amount = serialized.getInt("energy");
-                energy = LazyOptional.of(() -> new EnergyStorage(10000, 100, 10, amount));
+                energy = LazyOptional.of(() -> new InternalEnergyStorage(10000, 100, 10, amount));
                 energyInitialized = true;
             }
         }
 
         if(!energyInitialized) {
-            energy = LazyOptional.of(() -> new EnergyStorage(10000, 100, 10, 5000));
+            energy = LazyOptional.of(() -> new InternalEnergyStorage(10000, 100, 10, 5000));
         }
     }
 

@@ -41,6 +41,10 @@ public class DataCache<T> extends SimpleJsonResourceReloadListener {
         return value != null ? value : defaultValue;
     }
 
+    public Map<ResourceLocation, T> getAll() {
+        return content;
+    }
+
     @Override
     public String toString() {
         return "DataCache{" +

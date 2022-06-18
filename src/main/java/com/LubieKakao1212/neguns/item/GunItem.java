@@ -2,9 +2,11 @@ package com.LubieKakao1212.neguns.item;
 
 import com.LubieKakao1212.neguns.capability.GunCapabilityProvider;
 import com.LubieKakao1212.neguns.capability.GunCaps;
-import com.LubieKakao1212.neguns.gun.dummy.EntityChain;
+import com.LubieKakao1212.neguns.capability.gun.IGun;
 import com.LubieKakao1212.neguns.gun.state.GunState;
 import com.LubieKakao1212.neguns.item.render.GunRenderer;
+import com.LubieKakao1212.neguns.resources.NEGunsDataCache;
+import com.LubieKakao1212.qulib.util.entity.EntityChain;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.nbt.CompoundTag;
@@ -21,14 +23,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import software.bernie.geckolib3.network.ISyncable;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -82,7 +90,7 @@ public class GunItem extends Item implements IAnimatable, ISyncable {
 
     @Override
     public void registerControllers(AnimationData data) {
-
+        data.addAnimationController(new AnimationController(this, "controller", 1, event -> PlayState.CONTINUE));
     }
 
     @Override
@@ -92,19 +100,52 @@ public class GunItem extends Item implements IAnimatable, ISyncable {
 
     @Override
     public void onAnimationSync(int id, int state) {
+        final AnimationController controller = GeckoLibUtil.getControllerForID(this.factory, id, "controller");
 
+        if (controller.getAnimationState() == AnimationState.Stopped) {
+
+            GunRenderer renderer = (GunRenderer) RenderProperties.get(this).getItemStackRenderer();
+            String animName = NEGunsDataCache.GUN_ANIMATIONS.getName(state);
+            ResourceLocation modelId = NEGunsDataCache.GUN_ANIMATIONS.getModelFromAnimation(animName);
+
+            renderer.setModel(NEGunsDataCache.getOrCreateModel(modelId));
+
+            controller.markNeedsReload();
+            controller.setAnimation(new AnimationBuilder().addAnimation(animName, false));
+
+            renderer.setModel(NEGunsDataCache.FAKE_MODEL);
+        }
+    }
+
+    @Override
+    public int getUseDuration(ItemStack pStack) {
+        return 60;
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        if(player.level.isClientSide) {
-           return InteractionResultHolder.pass(player.getItemInHand(usedHand));
-        }
         ItemStack stack = player.getItemInHand(usedHand);
 
-        stack.getCapability(GunCaps.GUN).ifPresent(
-                (gun) -> gun.getGunType().trigger(stack, new EntityChain().add(player), new GunState())
-        );
-        return InteractionResultHolder.pass(stack);
+        boolean[] flag = { false };
+        if(level.isClientSide) {
+            stack.getCapability(GunCaps.GUN).ifPresent((gun) -> {
+                player.startUsingItem(usedHand);
+                flag[0] = true;
+            });
+        }else {
+            stack.getCapability(GunCaps.GUN).ifPresent(
+                    (gun) -> {
+                        gun.getGunType().trigger(stack, new EntityChain().add(player), new GunState());
+                        player.startUsingItem(usedHand);
+                        flag[0] = true;
+                    }
+            );
+        }
+        if(flag[0]) {
+            return InteractionResultHolder.consume(stack);
+        }else
+        {
+            return InteractionResultHolder.fail(stack);
+        }
     }
 }

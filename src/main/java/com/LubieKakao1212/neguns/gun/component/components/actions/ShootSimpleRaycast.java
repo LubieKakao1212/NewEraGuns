@@ -1,13 +1,13 @@
 package com.LubieKakao1212.neguns.gun.component.components.actions;
 
 import com.LubieKakao1212.neguns.gun.component.IGunComponent;
-import com.LubieKakao1212.neguns.gun.dummy.EntityChain;
+import com.LubieKakao1212.qulib.util.entity.EntityChain;
 import com.LubieKakao1212.neguns.gun.state.GunState;
 import com.LubieKakao1212.neguns.physics.BlockStatePos;
 import com.LubieKakao1212.neguns.physics.Raycast;
 import com.LubieKakao1212.neguns.physics.RaycastHit;
 import com.LubieKakao1212.qulib.math.AimUtil;
-import com.LubieKakao1212.qulib.util.Vector3dUtil;
+import com.LubieKakao1212.qulib.util.joml.Vector3dUtil;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;

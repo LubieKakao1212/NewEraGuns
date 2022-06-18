@@ -1,9 +1,14 @@
 package com.LubieKakao1212.neguns.data;
 
+import com.LubieKakao1212.neguns.NewEraGunsMod;
 import com.LubieKakao1212.neguns.data.serializer.GunComponentDeserializer;
 import com.LubieKakao1212.neguns.gun.component.IGunComponent;
+import com.LubieKakao1212.neguns.network.NEGunsNetwork;
+import com.LubieKakao1212.neguns.network.message.SyncGunDataMSG;
+import com.LubieKakao1212.neguns.resources.NEGunsDataCache;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.minecraftforge.network.PacketDistributor;
 
 public class AllTheData {
 
@@ -13,7 +18,15 @@ public class AllTheData {
 
     public static final GunTypeInfo DEFAULT_GUN_TYPE;
 
-    public static final DataCache<GunTypeInfo> gunTypes = new DataCache<>(gson, "guns/type", GunTypeInfo.class);
+    public static final SyncingDataCache<GunTypeInfo> gunTypes = new SyncingDataCache<>(gson, "guns/type", GunTypeInfo.class, (data) -> {
+        if(NewEraGunsMod.serverStarted) {
+            NEGunsNetwork.INSTANCE.send(PacketDistributor.ALL.noArg(), new SyncGunDataMSG(data));
+        }
+
+        NEGunsDataCache.recacheAnimations();
+
+        
+    });
 
     static {
         DEFAULT_GUN_TYPE = gson.fromJson("{" +
@@ -21,4 +34,9 @@ public class AllTheData {
                 "\"model\": \"neguns:potato\"" +
                 "}", GunTypeInfo.class);
     }
+
+    public void clientSetup() {
+        NewEraGunsMod.LOGGER.info(gunTypes);
+    }
+
 }

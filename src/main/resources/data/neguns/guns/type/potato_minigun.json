@@ -1,20 +1,31 @@
 {
   "model": "neguns:dual_potato",
+  "animations": [
+    "animation.dual_potato_cannon.shoot",
+    "animation.dual_potato_cannon.fire",
+    "animation.dual_potato_cannon.reload"
+  ],
   "trigger": [
     {
       "type": "neguns:conditional",
-      "conditions": [{
+      "condition": {
           "type":"neguns:fe_amount",
           "condition": {
             "eqgr": 9000
           }
-      }],
-      "trigger_success" : {
-        "type": "neguns:raycast_simple",
-        "damage": 1,
-        "range": 10,
-        "pierce": 5
       },
+      "trigger_success" : [
+        {
+          "type": "neguns:raycast_simple",
+          "damage": 1,
+          "range": 10,
+          "pierce": 5
+        },
+        {
+          "type": "neguns:trigger_animation",
+          "animation": "animation.dual_potato_cannon.shoot"
+        }
+      ],
       "trigger_fail": [
         {
           "type": "neguns:debug",

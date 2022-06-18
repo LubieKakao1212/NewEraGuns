@@ -3,10 +3,12 @@ package com.LubieKakao1212.neguns.init;
 import com.LubieKakao1212.neguns.NewEraGunsMod;
 import com.LubieKakao1212.neguns.capability.gun.IGun;
 import com.LubieKakao1212.neguns.gun.component.GunComponentType;
+import com.LubieKakao1212.neguns.gun.component.components.actions.FEDrain;
 import com.LubieKakao1212.neguns.gun.component.components.actions.ShootSimpleRaycast;
 import com.LubieKakao1212.neguns.gun.component.components.conditions.FEAmountCondition;
 import com.LubieKakao1212.neguns.gun.component.components.helper.Conditional;
 import com.LubieKakao1212.neguns.gun.component.components.helper.debug.PrintMessage;
+import com.LubieKakao1212.neguns.gun.component.components.visual.Animate;
 import com.LubieKakao1212.neguns.item.DebugItem;
 import com.LubieKakao1212.neguns.item.GunItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -31,12 +33,18 @@ public class Register {
     static {
         NEGunsRegistries.gunComponentRegistry = GUN_COMPONENTS.makeRegistry(GunComponentType.class, () -> new RegistryBuilder<>());
         GUN_COMPONENTS.register("debug", () -> GunComponentType.create(PrintMessage.class));
+
+        GUN_COMPONENTS.register("trigger_animation", () -> GunComponentType.create(Animate.class));
+
         GUN_COMPONENTS.register("fe_amount", () -> GunComponentType.create(FEAmountCondition.class));
+        GUN_COMPONENTS.register("fe_drain", () -> GunComponentType.create(FEDrain.class));
+
         GUN_COMPONENTS.register("conditional", () -> GunComponentType.create(Conditional.class));
+
         GUN_COMPONENTS.register("raycast_simple", () -> GunComponentType.create(ShootSimpleRaycast.class));
 
         ITEMS.register("debug", () -> new DebugItem(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS)));
-        ITEMS.register("gun", () -> new GunItem(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS)));
+        ITEMS.register("gun", () -> new GunItem(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS).stacksTo(1)));
     }
 
     public static void init()
