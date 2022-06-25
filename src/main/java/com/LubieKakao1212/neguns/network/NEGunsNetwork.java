@@ -2,7 +2,6 @@ package com.LubieKakao1212.neguns.network;
 
 import com.LubieKakao1212.neguns.NewEraGunsMod;
 import com.LubieKakao1212.neguns.data.AllTheData;
-import com.LubieKakao1212.neguns.event.SyncEventHandler;
 import com.LubieKakao1212.neguns.network.message.AcknowledgeMSG;
 import com.LubieKakao1212.neguns.network.message.SyncGunDataMSG;
 import net.minecraft.resources.ResourceLocation;

@@ -1,11 +1,13 @@
 package com.LubieKakao1212.neguns.capability;
 
+import com.LubieKakao1212.neguns.capability.energy.GunEnergyStorage;
 import com.LubieKakao1212.neguns.capability.gun.Gun;
 import com.LubieKakao1212.qulib.capability.energy.InternalEnergyStorage;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -15,31 +17,29 @@ import org.jetbrains.annotations.Nullable;
 
 public class GunCapabilityProvider implements ICapabilitySerializable<CompoundTag> {
 
-    private static final String ENERGY_TAG_ID = "energy";
-
     private ResourceLocation gunTypeId;
 
     private LazyOptional<Gun> gunType;
 
     private LazyOptional<InternalEnergyStorage> energy;
 
-    public GunCapabilityProvider(ResourceLocation gunTypeId, CompoundTag serialized) {
+    public GunCapabilityProvider(ItemStack gunStack, ResourceLocation gunTypeId, CompoundTag serialized) {
         this.gunTypeId = gunTypeId;
         gunType = LazyOptional.of(() -> new Gun(gunTypeId));
 
-        boolean energyInitialized = false;
+        //boolean energyInitialized = false;
 
-        if(serialized != null) {
-            if(serialized.contains(ENERGY_TAG_ID, Tag.TAG_INT)) {
+        /*if(serialized != null) {
+            *//*if(serialized.contains(ENERGY_TAG_ID, Tag.TAG_INT)) {
                 final int amount = serialized.getInt("energy");
                 energy = LazyOptional.of(() -> new InternalEnergyStorage(10000, 100, 10, amount));
                 energyInitialized = true;
-            }
-        }
+            }*//*
+        }*/
 
-        if(!energyInitialized) {
-            energy = LazyOptional.of(() -> new InternalEnergyStorage(10000, 100, 10, 5000));
-        }
+        //if(!energyInitialized) {
+        energy = LazyOptional.of(() -> new GunEnergyStorage(gunStack,10000, 100, 10, 0));
+        //}
     }
 
     @NotNull
@@ -57,9 +57,9 @@ public class GunCapabilityProvider implements ICapabilitySerializable<CompoundTa
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbtOut = new CompoundTag();
-        energy.ifPresent((energyStorage) ->
+        /*energy.ifPresent((energyStorage) ->
                 nbtOut.put(ENERGY_TAG_ID, energyStorage.serializeNBT())
-        );
+        );*/
         return nbtOut;
     }
 

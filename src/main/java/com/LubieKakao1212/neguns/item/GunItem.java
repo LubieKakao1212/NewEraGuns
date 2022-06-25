@@ -58,7 +58,7 @@ public class GunItem extends Item implements IAnimatable, ISyncable {
             if(nbt != null) {
                 nbt = nbt.getCompound("Parent");
             }
-            return new GunCapabilityProvider(gunTypeId, nbt);
+            return new GunCapabilityProvider(stack, gunTypeId, nbt);
         }
         return null;
     }
@@ -142,7 +142,7 @@ public class GunItem extends Item implements IAnimatable, ISyncable {
             );
         }
         if(flag[0]) {
-            return InteractionResultHolder.consume(stack);
+            return InteractionResultHolder.pass(stack);
         }else
         {
             return InteractionResultHolder.fail(stack);

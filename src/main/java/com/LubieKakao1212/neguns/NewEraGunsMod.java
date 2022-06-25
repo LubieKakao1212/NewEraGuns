@@ -19,6 +19,7 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import software.bernie.example.GeckoLibMod;
 import software.bernie.geckolib3.GeckoLib;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -31,6 +32,8 @@ public class NewEraGunsMod
     public static boolean serverStarted = false;
 
     public NewEraGunsMod() {
+        GeckoLibMod.DISABLE_IN_DEV = true;
+
         GeckoLib.initialize();
 
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> NEGunsResources::register);

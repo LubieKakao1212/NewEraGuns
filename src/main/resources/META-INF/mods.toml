@@ -60,3 +60,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed mollis lacinia magn
     versionRange="[1.18.1,1.19)"
     ordering="NONE"
     side="BOTH"
+[[dependencies.neguns]]
+    modId="geckolib3"
+    mandatory=true
+    ordering="BEFORE"
+    versionRange="[3.0.23, 3.0.100]"

@@ -90,6 +90,7 @@
 			}
 		},
 		"animation.dual_potato_cannon.shoot": {
+			"loop": "hold_on_last_frame",
 			"animation_length": 0.25,
 			"bones": {
 				"Barrels": {
@@ -98,7 +99,8 @@
 							"vector": [0, 0, 0]
 						},
 						"0.25": {
-							"vector": [0, 0, -90]
+							"vector": [0, 0, -90],
+							"easing": "linear"
 						}
 					}
 				},

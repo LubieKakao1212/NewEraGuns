@@ -185,7 +185,7 @@ dependencies {
     // at runtime, use the full JEI jar
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
 
-    implementation fg.deobf("com.LubieKakao1212.qulib:qulib:1.0")
+    implementation fg.deobf("com.LubieKakao1212.qulib:qulib:${qulib_version}")
 
     implementation fg.deobf("software.bernie.geckolib:geckolib-1.18-forge:${geckolib_version}")
 

@@ -24,6 +24,10 @@
         {
           "type": "neguns:trigger_animation",
           "animation": "animation.dual_potato_cannon.shoot"
+        },
+        {
+          "type": "neguns:fe_drain",
+          "amount": 10
         }
       ],
       "trigger_fail": [
@@ -47,5 +51,9 @@
         }
       ]
     }
-  ]
+  ],
+  "trigger-hold": {
+    "type": "neguns:debug",
+    "message": "hold"
+  }
 }

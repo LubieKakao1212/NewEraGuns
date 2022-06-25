@@ -2,9 +2,11 @@ package com.LubieKakao1212.neguns.data;
 
 import com.LubieKakao1212.neguns.NewEraGunsMod;
 import com.LubieKakao1212.neguns.gun.component.IGunComponent;
+import com.LubieKakao1212.neguns.gun.component.components.FallbackComponent;
 import com.LubieKakao1212.neguns.gun.state.GunState;
 import com.LubieKakao1212.neguns.resources.NEGunsDataCache;
 import com.LubieKakao1212.qulib.util.entity.EntityChain;
+import com.google.gson.annotations.SerializedName;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib3.core.AnimationState;
@@ -28,7 +30,14 @@ public class GunTypeInfo implements IAnimatable, ISyncable {
 
     private transient ResourceLocation modelLocation;
 
+    @SerializedName(value = "trigger", alternate = { "trigger-press" })
     private IGunComponent trigger;
+
+    @SerializedName("trigger-hold")
+    private IGunComponent triggerHold = null;
+
+    @SerializedName("trigger-release")
+    private IGunComponent triggerRelease;
 
     public final List<String> animations = new ArrayList<>();
 
@@ -39,10 +48,21 @@ public class GunTypeInfo implements IAnimatable, ISyncable {
         return modelLocation;
     }
 
-    public boolean trigger(ItemStack gun, EntityChain entityChain, GunState state) {
-        NewEraGunsMod.LOGGER.warn(animations);
+    public void trigger(ItemStack gun, EntityChain entityChain, GunState state) {
         trigger.executeAction(gun, entityChain, state);
-        return true;
+    }
+
+    public void triggerHold(ItemStack gun, EntityChain entityChain, GunState state) {
+        if(triggerHold == null) {
+            trigger(gun, entityChain, state);
+        }else
+        {
+            triggerHold.executeAction(gun, entityChain, state);
+        }
+    }
+
+    public void setTriggerRelease(ItemStack gun, EntityChain entityChain, GunState state) {
+        triggerRelease.executeAction(gun, entityChain, state);
     }
 
     public void setModel(ResourceLocation modelLocation) {
