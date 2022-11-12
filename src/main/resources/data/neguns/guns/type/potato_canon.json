@@ -1,5 +1,27 @@
 {
-  "hit": {
-    "damage": 1
-  }
+  "model": "neguns:dual_potato",
+  "animations": [
+    "animation.dual_potato_cannon.shoot",
+    "animation.dual_potato_cannon.fire",
+    "animation.dual_potato_cannon.reload"
+  ],
+  "trigger": [
+    {
+      "type": "neguns:fe_drain",
+      "amount": 250
+    },
+    {
+      "type": "neguns:debug",
+      "message": "one"
+    },
+    {
+      "type": "neguns:cnd",
+      "expression": "(fe_ratio > 0.5) && (fe < 9000)"
+    },
+    {
+      "type": "neguns:debug",
+      "message": "two"
+    }
+  ],
+  "trigger-hold": []
 }

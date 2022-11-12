@@ -1,10 +1,13 @@
 package com.LubieKakao1212.neguns.capability.energy;
 
+import com.LubieKakao1212.neguns.capability.GunCaps;
+import com.LubieKakao1212.neguns.gun.state.IGunStateProvider;
+import com.LubieKakao1212.neguns.gun.state.GunState;
 import com.LubieKakao1212.qulib.capability.energy.InternalEnergyStorage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
-public class GunEnergyStorage extends InternalEnergyStorage {
+public class GunEnergyStorage extends InternalEnergyStorage implements IGunStateProvider {
 
     private static final String ENERGY_TAG_ID = "energy";
 
@@ -24,9 +27,13 @@ public class GunEnergyStorage extends InternalEnergyStorage {
 
     public GunEnergyStorage(ItemStack stack, int capacity, int maxReceive, int maxExtract, int energy) {
         super(capacity, maxReceive, maxExtract, energy);
-        this. stack = stack;
+        this.stack = stack;
         readStackTag();
         writeStackTag();
+
+        stack.getCapability(GunCaps.GUN).ifPresent((gun) -> {
+            gun.registerStateProvider(this);
+        });
     }
 
     @Override
@@ -75,5 +82,12 @@ public class GunEnergyStorage extends InternalEnergyStorage {
             return energy;
         }
         return 0;
+    }
+
+    @Override
+    public void addVariables(GunState state) {
+        //TODO Temporary constant names
+        state.putTemporary("fe", (double)energy);
+        state.putTemporary("fe_ratio", ((double)energy) / capacity);
     }
 }

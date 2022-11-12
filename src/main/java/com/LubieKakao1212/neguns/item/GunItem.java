@@ -8,12 +8,10 @@ import com.LubieKakao1212.neguns.item.render.GunRenderer;
 import com.LubieKakao1212.neguns.resources.NEGunsDataCache;
 import com.LubieKakao1212.qulib.util.entity.EntityChain;
 import net.minecraft.ChatFormatting;
+import net.minecraft.ResourceLocationException;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -54,17 +52,27 @@ public class GunItem extends Item implements IAnimatable, ISyncable {
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         if(stack.getTag() != null) {
-            ResourceLocation gunTypeId = new ResourceLocation(stack.getTag().getString("GunType"));
-            if(nbt != null) {
-                nbt = nbt.getCompound("Parent");
+            try {
+                ResourceLocation gunTypeId = new ResourceLocation(stack.getTag().getString("GunType"));
+                if(nbt != null) {
+                    nbt = nbt.getCompound("Parent");
+                }
+                return new GunCapabilityProvider(stack, gunTypeId, nbt);
             }
-            return new GunCapabilityProvider(stack, gunTypeId, nbt);
+            catch(ResourceLocationException e) {
+            }
         }
         return null;
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flags) {
+        if(!stack.getCapability(GunCaps.GUN).isPresent()) {
+            if(stack.hasTag()) {
+                tooltip.add(new TextComponent("Could not create gun: " + stack.getTag().getString("GunType")).withStyle(ChatFormatting.RED));
+            }else
+                tooltip.add(new TextComponent("Could not create gun: missing tag").withStyle(ChatFormatting.RED));
+        }
         if(flags.isAdvanced()){
             stack.getCapability(GunCaps.GUN).ifPresent(
                     (gunType) -> tooltip.add(new TextComponent(gunType.getGunType().getModel().toString()))
@@ -135,8 +143,8 @@ public class GunItem extends Item implements IAnimatable, ISyncable {
         }else {
             stack.getCapability(GunCaps.GUN).ifPresent(
                     (gun) -> {
-                        gun.getGunType().trigger(stack, new EntityChain().add(player), new GunState());
                         player.startUsingItem(usedHand);
+                        gun.getGunType().trigger(stack, new EntityChain().add(player), gun);
                         flag[0] = true;
                     }
             );

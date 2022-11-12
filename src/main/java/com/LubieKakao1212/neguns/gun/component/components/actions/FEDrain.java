@@ -1,30 +1,30 @@
 package com.LubieKakao1212.neguns.gun.component.components.actions;
 
 import com.LubieKakao1212.neguns.NewEraGunsMod;
+import com.LubieKakao1212.neguns.capability.gun.IGun;
+import com.LubieKakao1212.neguns.data.util.vars.DoubleOrExpression;
 import com.LubieKakao1212.neguns.gun.component.IGunComponent;
 import com.LubieKakao1212.neguns.gun.state.GunState;
 import com.LubieKakao1212.qulib.capability.energy.InternalEnergyStorage;
 import com.LubieKakao1212.qulib.util.entity.EntityChain;
+import com.fathzer.soft.javaluator.AbstractEvaluator;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
-import java.util.logging.Logger;
-
-
 public class FEDrain implements IGunComponent {
 
-    private int amount;
+    private DoubleOrExpression amount = new DoubleOrExpression(0d);
 
     @Override
-    public boolean executeAction(ItemStack gun, EntityChain entityChain, GunState state) {
-        LazyOptional<IEnergyStorage> energyCapability = gun.getCapability(CapabilityEnergy.ENERGY);
+    public boolean executeAction(ItemStack gunStack, EntityChain entityChain, IGun gun) {
+        LazyOptional<IEnergyStorage> energyCapability = gunStack.getCapability(CapabilityEnergy.ENERGY);
         if(energyCapability.isPresent()) {
             IEnergyStorage energyStorage = energyCapability.resolve().get();
             if(energyStorage instanceof InternalEnergyStorage) {
                 InternalEnergyStorage energy = (InternalEnergyStorage) energyStorage;
-                energy.extractEnergyInternal(amount, false);
+                energy.extractEnergyInternal(amount.get(gun.getState(), gun.getGunType().getEvaluator()).intValue(), false);
             }else
             {
                 //TODO better message

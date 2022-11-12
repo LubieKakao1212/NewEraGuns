@@ -10,21 +10,16 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Sequence implements IGunComponent {
+public class NonTerminalSequence implements IGunComponent {
 
     private List<IGunComponent> sequence = new ArrayList<>();
 
     @Override
     public boolean executeAction(ItemStack gunStack, EntityChain entityChain, IGun gun) {
-        for(IGunComponent component : sequence) {
-            if(!component.executeAction(gunStack, entityChain, gun)) return false;
+        for (IGunComponent cmp : sequence) {
+            cmp.executeAction(gunStack, entityChain, gun);
         }
         return true;
     }
-
-    public void Add(IGunComponent cmp) {
-        sequence.add(cmp);
-    }
-
 
 }

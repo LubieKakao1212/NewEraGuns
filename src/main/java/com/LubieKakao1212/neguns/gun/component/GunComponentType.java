@@ -9,8 +9,8 @@ import java.util.function.Function;
 
 public class GunComponentType extends ForgeRegistryEntry<GunComponentType> {
 
-    public static GunComponentType create(Class<? extends IGunComponent> componenetClass) {
-        return new GunComponentType((jsonIn) -> AllTheData.gson.fromJson(jsonIn, componenetClass));
+    public static GunComponentType create(Class<? extends IGunComponent> componentClass) {
+        return new GunComponentType((jsonIn) -> AllTheData.gson.fromJson(jsonIn, componentClass));
     }
 
     public static GunComponentType create(Function<JsonElement, IGunComponent> componentFactory) {

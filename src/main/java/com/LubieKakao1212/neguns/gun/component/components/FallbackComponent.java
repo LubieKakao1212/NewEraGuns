@@ -1,9 +1,11 @@
 package com.LubieKakao1212.neguns.gun.component.components;
 
 import com.LubieKakao1212.neguns.NewEraGunsMod;
+import com.LubieKakao1212.neguns.capability.gun.IGun;
 import com.LubieKakao1212.neguns.gun.component.IGunComponent;
 import com.LubieKakao1212.neguns.gun.state.GunState;
 import com.LubieKakao1212.qulib.util.entity.EntityChain;
+import com.fathzer.soft.javaluator.AbstractEvaluator;
 import net.minecraft.world.item.ItemStack;
 
 public class FallbackComponent implements IGunComponent {
@@ -20,7 +22,7 @@ public class FallbackComponent implements IGunComponent {
     }
 
     @Override
-    public boolean executeAction(ItemStack gun, EntityChain entityChain, GunState state) {
+    public boolean executeAction(ItemStack gun, EntityChain entityChain, IGun state) {
         NewEraGunsMod.LOGGER.warn(message);
         return true;
     }

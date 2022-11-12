@@ -9,6 +9,8 @@ import com.LubieKakao1212.qulib.util.entity.EntityChain;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.item.ItemEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -26,10 +28,11 @@ public class LevelEventHandler {
                 usedItem.getCapability(GunCaps.GUN).ifPresent(
                         (gun) -> {
                             GunTypeInfo gunType = gun.getGunType();
-                            gunType.triggerHold(usedItem, new EntityChain().add(event.player), new GunState());
+                            gunType.triggerHold(usedItem, new EntityChain().add(event.player), gun);
                         }
                 );
             }
         }
     }
+
 }

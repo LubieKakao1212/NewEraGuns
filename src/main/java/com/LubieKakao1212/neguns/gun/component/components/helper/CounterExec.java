@@ -7,24 +7,26 @@ import com.LubieKakao1212.qulib.util.entity.EntityChain;
 import com.fathzer.soft.javaluator.AbstractEvaluator;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+public class CounterExec implements IGunComponent {
 
-public class Sequence implements IGunComponent {
+    private String counterVar = "hT";
+    private double cooldown = 2f;
 
-    private List<IGunComponent> sequence = new ArrayList<>();
+    private IGunComponent trigger;
 
     @Override
     public boolean executeAction(ItemStack gunStack, EntityChain entityChain, IGun gun) {
-        for(IGunComponent component : sequence) {
-            if(!component.executeAction(gunStack, entityChain, gun)) return false;
+        Double var = (Double)gun.getState().get(counterVar);
+        var++;
+
+        boolean lastResult = false;
+
+        while(var > cooldown) {
+            var -= cooldown;
+            lastResult = trigger.executeAction(gunStack, entityChain, gun);
         }
-        return true;
+
+        gun.getState().put(counterVar, var);
+        return lastResult;
     }
-
-    public void Add(IGunComponent cmp) {
-        sequence.add(cmp);
-    }
-
-
 }

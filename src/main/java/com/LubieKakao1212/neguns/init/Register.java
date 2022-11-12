@@ -5,8 +5,10 @@ import com.LubieKakao1212.neguns.capability.gun.IGun;
 import com.LubieKakao1212.neguns.gun.component.GunComponentType;
 import com.LubieKakao1212.neguns.gun.component.components.actions.FEDrain;
 import com.LubieKakao1212.neguns.gun.component.components.actions.ShootSimpleRaycast;
+import com.LubieKakao1212.neguns.gun.component.components.conditions.Condition;
 import com.LubieKakao1212.neguns.gun.component.components.conditions.FEAmountCondition;
 import com.LubieKakao1212.neguns.gun.component.components.helper.Conditional;
+import com.LubieKakao1212.neguns.gun.component.components.helper.NonTerminalSequence;
 import com.LubieKakao1212.neguns.gun.component.components.helper.debug.PrintMessage;
 import com.LubieKakao1212.neguns.gun.component.components.visual.Animate;
 import com.LubieKakao1212.neguns.item.DebugItem;
@@ -39,7 +41,11 @@ public class Register {
         GUN_COMPONENTS.register("fe_amount", () -> GunComponentType.create(FEAmountCondition.class));
         GUN_COMPONENTS.register("fe_drain", () -> GunComponentType.create(FEDrain.class));
 
+        GUN_COMPONENTS.register("condition", () -> GunComponentType.create(Condition.class));
+        GUN_COMPONENTS.register("cnd", () -> GunComponentType.create(Condition.class));
+
         GUN_COMPONENTS.register("conditional", () -> GunComponentType.create(Conditional.class));
+        GUN_COMPONENTS.register("sequence", () -> GunComponentType.create(NonTerminalSequence.class));
 
         GUN_COMPONENTS.register("raycast_simple", () -> GunComponentType.create(ShootSimpleRaycast.class));
 
@@ -47,8 +53,7 @@ public class Register {
         ITEMS.register("gun", () -> new GunItem(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS).stacksTo(1)));
     }
 
-    public static void init()
-    {
+    public static void init() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         GUN_COMPONENTS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }

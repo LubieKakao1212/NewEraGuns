@@ -1,4 +1,4 @@
-package com.LubieKakao1212.neguns.data.behaviour.condition;
+package com.LubieKakao1212.neguns.data.util.condition;
 
 public class DoubleCondition implements IVariableCondition<Double> {
 
@@ -11,11 +11,11 @@ public class DoubleCondition implements IVariableCondition<Double> {
     @Override
     public boolean solve(Double value)  {
         boolean flag = value != null;
-        flag &= eqlo != null ? value <= eqlo : true;
-        flag &= eqgr != null ? value >= eqgr : true;
-        flag &= lo != null ? value < lo : true;
-        flag &= gr != null ? value > gr : true;
-        flag &= eq != null ? value == eq : true;
+        flag &= eqlo == null || value <= eqlo;
+        flag &= eqgr == null || value >= eqgr;
+        flag &= lo == null || value < lo;
+        flag &= gr == null || value > gr;
+        flag &= eq == null || value == eq;
         return flag;
     }
 

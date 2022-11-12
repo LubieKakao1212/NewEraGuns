@@ -1,11 +1,11 @@
 package com.LubieKakao1212.neguns.data;
 
-import com.LubieKakao1212.neguns.NewEraGunsMod;
+import com.LubieKakao1212.neguns.capability.gun.IGun;
+import com.LubieKakao1212.neguns.expression.MultiTypeEvaluator;
 import com.LubieKakao1212.neguns.gun.component.IGunComponent;
-import com.LubieKakao1212.neguns.gun.component.components.FallbackComponent;
-import com.LubieKakao1212.neguns.gun.state.GunState;
 import com.LubieKakao1212.neguns.resources.NEGunsDataCache;
 import com.LubieKakao1212.qulib.util.entity.EntityChain;
+import com.fathzer.soft.javaluator.AbstractEvaluator;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +26,8 @@ public class GunTypeInfo implements IAnimatable, ISyncable {
 
     private AnimationFactory factory = new AnimationFactory(this);
 
+    private boolean useJs = false;
+
     private String model = "";
 
     private transient ResourceLocation modelLocation;
@@ -41,6 +43,8 @@ public class GunTypeInfo implements IAnimatable, ISyncable {
 
     public final List<String> animations = new ArrayList<>();
 
+    private transient AbstractEvaluator evaluator;
+
     public ResourceLocation getModel() {
         if(modelLocation == null) {
             modelLocation = new ResourceLocation(model);
@@ -48,21 +52,31 @@ public class GunTypeInfo implements IAnimatable, ISyncable {
         return modelLocation;
     }
 
-    public void trigger(ItemStack gun, EntityChain entityChain, GunState state) {
-        trigger.executeAction(gun, entityChain, state);
+    public AbstractEvaluator getEvaluator() {
+        if(evaluator != null) {
+            return evaluator;
+        }
+        return evaluator = (useJs ? null : new MultiTypeEvaluator());
     }
 
-    public void triggerHold(ItemStack gun, EntityChain entityChain, GunState state) {
+    public void trigger(ItemStack gunStack, EntityChain entityChain, IGun gun) {
+        gun.applyProvidedState();
+        trigger.executeAction(gunStack, entityChain, gun);
+    }
+
+    public void triggerHold(ItemStack gunStack, EntityChain entityChain, IGun gun) {
         if(triggerHold == null) {
-            trigger(gun, entityChain, state);
+            trigger(gunStack, entityChain, gun);
         }else
         {
-            triggerHold.executeAction(gun, entityChain, state);
+            gun.applyProvidedState();
+            triggerHold.executeAction(gunStack, entityChain, gun);
         }
     }
 
-    public void setTriggerRelease(ItemStack gun, EntityChain entityChain, GunState state) {
-        triggerRelease.executeAction(gun, entityChain, state);
+    public void setTriggerRelease(ItemStack gunStack, EntityChain entityChain, IGun gun) {
+        gun.applyProvidedState();
+        triggerRelease.executeAction(gunStack, entityChain, gun);
     }
 
     public void setModel(ResourceLocation modelLocation) {

@@ -1,4 +1,4 @@
-package com.LubieKakao1212.neguns.data.behaviour.condition;
+package com.LubieKakao1212.neguns.data.util.condition;
 
 public interface IVariableCondition<T> {
 
