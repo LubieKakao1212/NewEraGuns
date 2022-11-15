@@ -1,9 +1,10 @@
 package com.LubieKakao1212.neguns.data;
 
 import com.LubieKakao1212.neguns.NewEraGunsMod;
-import com.LubieKakao1212.neguns.data.serializer.DoubleExpressionDeserializer;
 import com.LubieKakao1212.neguns.data.serializer.GunComponentDeserializer;
+import com.LubieKakao1212.neguns.data.serializer.ValueExpressionDeserializer;
 import com.LubieKakao1212.neguns.data.util.vars.DoubleOrExpression;
+import com.LubieKakao1212.neguns.data.util.vars.VectorOrExpression;
 import com.LubieKakao1212.neguns.gun.component.IGunComponent;
 import com.LubieKakao1212.neguns.network.NEGunsNetwork;
 import com.LubieKakao1212.neguns.network.message.SyncGunDataMSG;
@@ -16,7 +17,8 @@ public class AllTheData {
 
     public static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(IGunComponent.class, new GunComponentDeserializer())
-            .registerTypeAdapter(DoubleOrExpression.class, new DoubleExpressionDeserializer())
+            .registerTypeAdapter(DoubleOrExpression.class, new ValueExpressionDeserializer(DoubleOrExpression::new))
+            .registerTypeAdapter(VectorOrExpression.class, new ValueExpressionDeserializer(VectorOrExpression::new))
             .create();
 
     public static final GunTypeInfo DEFAULT_GUN_TYPE;

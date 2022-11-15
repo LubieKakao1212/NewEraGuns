@@ -2,10 +2,13 @@ package com.LubieKakao1212.neguns.expression;
 
 import com.LubieKakao1212.qulib.util.joml.Vector3dUtil;
 import com.fathzer.soft.javaluator.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import org.joml.Vector3d;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.function.BiFunction;
 
 public class MultiTypeEvaluator extends AbstractEvaluator<Object> {
@@ -72,6 +75,9 @@ public class MultiTypeEvaluator extends AbstractEvaluator<Object> {
 
     //region Functions
 
+    //Number functions
+    public static final Function RANDOM = new Function("random", 2);
+
     //Vector construction
     public static final Function VEC3_CONSTRUCT = new Function("vec3", 2, 3);
     public static final Function QUATERNION_CONSTRUCT = new Function("quat", 4);
@@ -99,6 +105,9 @@ public class MultiTypeEvaluator extends AbstractEvaluator<Object> {
     public static final Function SUM = new Function("sum", 1, 2147483647);
     public static final Function AVERAGE = new Function("avg", 1, 2147483647);
 
+    //Entity attribute getters
+    public static final Function IS_LIVING = new Function("isLiving", 1);
+
     //endregion
 
     //region Constants
@@ -122,14 +131,29 @@ public class MultiTypeEvaluator extends AbstractEvaluator<Object> {
 
     static {
         PARAMETERS.addConstants(Arrays.asList(new Constant[] { PI, E, UP, DOWN, SOUTH, NORTH, EAST, WEST, X, Y, Z, W }));
-        PARAMETERS.addOperators(Arrays.asList(new Operator[] { EQUALS, LESS_THAN, GREATER_THAN, LESS_OR_EQUAL_THAN, GREATER_OR_EQUAL_THAN, AND, OR, XOR, NOT, EXPONENT, MULTIPLY, DIVIDE, ADD, SUBTRACT, NEGATE, COMPONENT }));
-        PARAMETERS.addFunctions(Arrays.asList(new Function[] { VEC3_CONSTRUCT, QUATERNION_CONSTRUCT, LENGTH, LENGTH_SQ, NORMALIZE, DOT, CROSS, SIN, COS, TAN, ASIN, ACOS, ATAN, ATAN2, MIN, MAX, SUM, AVERAGE }));
+        PARAMETERS.addOperators(Arrays.asList(new Operator[] {
+                EQUALS, LESS_THAN, GREATER_THAN, LESS_OR_EQUAL_THAN, GREATER_OR_EQUAL_THAN,
+                AND, OR, XOR, NOT,
+                EXPONENT,
+                MULTIPLY, DIVIDE, ADD, SUBTRACT, NEGATE,
+                COMPONENT }));
+
+        PARAMETERS.addFunctions(Arrays.asList(new Function[] {
+                RANDOM,
+                VEC3_CONSTRUCT, QUATERNION_CONSTRUCT,
+                LENGTH, LENGTH_SQ, NORMALIZE, DOT, CROSS,
+                SIN, COS, TAN, ASIN, ACOS, ATAN, ATAN2,
+                MIN, MAX, SUM, AVERAGE,
+                IS_LIVING}));
         PARAMETERS.addFunctionBracket(BracketPair.PARENTHESES);
         PARAMETERS.addExpressionBracket(BracketPair.PARENTHESES);
     }
 
+    private Random random;
+
     public MultiTypeEvaluator() {
         super(PARAMETERS);
+        random = new Random();
     }
 
     @Override
@@ -267,6 +291,13 @@ public class MultiTypeEvaluator extends AbstractEvaluator<Object> {
 
     @Override
     protected Object evaluate(Function function, Iterator<Object> arguments, Object evaluationContext) {
+        if(function.equals(RANDOM)) {
+            return random.nextDouble(safeDouble(arguments.next()), safeDouble(arguments.next()));
+        }
+
+        else if(function.equals(IS_LIVING)) {
+            return safeEntity(arguments.next()) instanceof LivingEntity;
+        }
         return super.evaluate(function, arguments, evaluationContext);
     }
 
@@ -302,6 +333,12 @@ public class MultiTypeEvaluator extends AbstractEvaluator<Object> {
         if(!(arg instanceof Boolean))
             throw new EvaluationException("Expected Boolean, got: " + arg.getClass());
         return (Boolean) arg;
+    }
+
+    public static Entity safeEntity(Object arg) throws EvaluationException {
+        if(!(arg instanceof Entity))
+            throw new EvaluationException("Expected Boolean, got: " + arg.getClass());
+        return (Entity) arg;
     }
 
     public static Object validateNotNull(Object o, String message) {

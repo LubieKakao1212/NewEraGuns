@@ -3,13 +3,14 @@ package com.LubieKakao1212.neguns.init;
 import com.LubieKakao1212.neguns.NewEraGunsMod;
 import com.LubieKakao1212.neguns.capability.gun.IGun;
 import com.LubieKakao1212.neguns.gun.component.GunComponentType;
-import com.LubieKakao1212.neguns.gun.component.components.actions.FEDrain;
-import com.LubieKakao1212.neguns.gun.component.components.actions.ShootSimpleRaycast;
+import com.LubieKakao1212.neguns.gun.component.components.actions.*;
 import com.LubieKakao1212.neguns.gun.component.components.conditions.Condition;
 import com.LubieKakao1212.neguns.gun.component.components.conditions.FEAmountCondition;
 import com.LubieKakao1212.neguns.gun.component.components.helper.Conditional;
+import com.LubieKakao1212.neguns.gun.component.components.helper.DefaultPierce;
 import com.LubieKakao1212.neguns.gun.component.components.helper.NonTerminalSequence;
 import com.LubieKakao1212.neguns.gun.component.components.helper.debug.PrintMessage;
+import com.LubieKakao1212.neguns.gun.component.components.helper.math.Scatter;
 import com.LubieKakao1212.neguns.gun.component.components.visual.Animate;
 import com.LubieKakao1212.neguns.item.DebugItem;
 import com.LubieKakao1212.neguns.item.GunItem;
@@ -47,6 +48,13 @@ public class Register {
         GUN_COMPONENTS.register("conditional", () -> GunComponentType.create(Conditional.class));
         GUN_COMPONENTS.register("sequence", () -> GunComponentType.create(NonTerminalSequence.class));
 
+        GUN_COMPONENTS.register("explode", () -> GunComponentType.create(Explode.class));
+
+        GUN_COMPONENTS.register("scatter", () -> GunComponentType.create(Scatter.class));
+        GUN_COMPONENTS.register("default_pierce", () -> GunComponentType.create(DefaultPierce.class));
+
+        GUN_COMPONENTS.register("damage", () -> GunComponentType.create(Damage.class));
+        GUN_COMPONENTS.register("ray", () -> GunComponentType.create(RaycastAction.class));
         GUN_COMPONENTS.register("raycast_simple", () -> GunComponentType.create(ShootSimpleRaycast.class));
 
         ITEMS.register("debug", () -> new DebugItem(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS)));

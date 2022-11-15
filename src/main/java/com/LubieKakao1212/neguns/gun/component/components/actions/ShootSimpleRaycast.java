@@ -42,7 +42,7 @@ public class ShootSimpleRaycast implements IGunComponent {
         }
 
         List<RaycastHit> raycastResults = raycast.perform(caster.level, position, AimUtil.calculateForwardWithUniformSpread(
-                AimUtil.aimDeg(caster.getXRot(), caster.getYRot()), spread.get(gun.getState(), gun.getGunType().getEvaluator()).doubleValue(), Vector3dUtil.south()), range.get(gun.getState(), gun.getGunType().getEvaluator()).doubleValue());
+                AimUtil.aimDeg(caster.getXRot(), caster.getYRot()), spread.get(gun.getState(), gun.getGunType().getEvaluator()), Vector3dUtil.south()), range.get(gun.getState(), gun.getGunType().getEvaluator()));
 
         for (RaycastHit hit : raycastResults) {
             if(hit.target() instanceof LivingEntity) {

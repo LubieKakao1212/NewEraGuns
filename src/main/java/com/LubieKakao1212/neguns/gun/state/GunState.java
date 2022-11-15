@@ -17,6 +17,7 @@ public class GunState implements AbstractVariableSet<Object>, INBTSerializable<C
     public static final String HOLD_VAR_REGEX = "(h[A-Z]\\w+)";
     public static final String TEMP_VAR_REGEX = "(t[A-Z]\\w+)";
 
+    //TODO Variable scopes
 
     /**
      * Permanent variables are stored until they are explicitly changed or removed
@@ -80,11 +81,11 @@ public class GunState implements AbstractVariableSet<Object>, INBTSerializable<C
 
     @Override
     public Object get(String s) {
-        Object tmpV = temporaryVars.get(s);
-        Double v = null;
+        Object v = temporaryVars.get(s);
+        /*Double v = null;
         if(tmpV instanceof Double) {
             v = (Double)tmpV;
-        }
+        }*/
         if(v == null) v = holdVars.get(s);
         if(v == null) v = permanentVars.get(s);
         return v;

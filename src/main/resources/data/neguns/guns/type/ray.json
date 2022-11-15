@@ -1,0 +1,54 @@
+{
+    "model": "neguns:dual_potato",
+    "animations": [
+        "animation.dual_potato_cannon.shoot",
+        "animation.dual_potato_cannon.fire",
+        "animation.dual_potato_cannon.reload"
+    ],
+    "trigger": [
+        {
+            "type": "neguns:scatter",
+            "base-direction": "north",
+            "output-variable": "tDir",
+            "roll": "random(0, pi*2)",
+            "angle": "random(0, pi/2)"
+        },
+        {
+            "type": "neguns:ray",
+            "direction": "tDir",
+            "pierce": 10,
+            "target-filter": 3,
+            "distance": 7,
+            "variable-scope": "ray1",
+            "hit-block": [
+                {
+                    "type": "neguns:explode",
+                    "strength": "pierce",
+                    "position": "hit_point"
+                },
+                {
+                    "type": "neguns:default_pierce",
+                    "amount": 100
+                }
+            ],
+            "hit-entity": [
+                {
+                    "type": "neguns:cnd",
+                    "expression": "isLiving(hit_entity)"
+                },
+                {
+                    "type": "neguns:damage",
+                    "damage": "pierce * 2",
+                    "damage-type": "fire",
+                    "receiving-entity": "hit_entity"
+                },
+                {
+                    "type": "neguns:default_pierce",
+                    "variable-scope": "ray1",
+                    "amount": 1
+                }
+            ]
+        }
+    ],
+    "trigger-hold": []
+}

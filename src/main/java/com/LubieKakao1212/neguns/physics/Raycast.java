@@ -207,6 +207,16 @@ public class Raycast {
     public enum Target {
         Entities,
         Blocks,
-        Both
+        Both;
+
+        public static Target fromMask(int mask) {
+            switch (mask) {
+                case 1: return Blocks;
+                case 2: return Entities;
+                case 3: return Both;
+                default: return null;
+            }
+        }
+
     }
 }

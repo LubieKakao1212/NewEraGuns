@@ -15,7 +15,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 public class FEDrain implements IGunComponent {
 
-    private DoubleOrExpression amount = new DoubleOrExpression(0d);
+    private DoubleOrExpression amount = new DoubleOrExpression();
 
     @Override
     public boolean executeAction(ItemStack gunStack, EntityChain entityChain, IGun gun) {
