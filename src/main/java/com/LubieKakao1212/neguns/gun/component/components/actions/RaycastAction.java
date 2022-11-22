@@ -44,7 +44,8 @@ public class RaycastAction implements IGunComponent {
     @SerializedName(value = "hit-entity")
     private IGunComponent entityHitAction;
 
-    //TODO scope
+    @SerializedName(value = "variable-scope")
+    private String scope = null;
 
     @Override
     public boolean executeAction(ItemStack gunStack, EntityChain entityChain, IGun gun) {
@@ -55,6 +56,10 @@ public class RaycastAction implements IGunComponent {
         Raycast raycast = new Raycast.Builder(Raycast.Target.fromMask(targetFilter)).setSorted(true).build();
 
         List<RaycastHit> hits = raycast.perform(entityChain.first().level, origin.get(state, evaluator), direction.get(state, evaluator), distance.get(state, evaluator));
+
+        if(scope != null) {
+            state.pushScope(scope);
+        }
 
         state.put("pierce", pierce.get(state, evaluator));
         for(RaycastHit hit : hits) {
@@ -76,6 +81,10 @@ public class RaycastAction implements IGunComponent {
             if(((Double)state.get("pierce")) <= 0.) {
                 break;
             }
+        }
+
+        if(scope != null) {
+            state.popScope(scope);
         }
 
         return true;

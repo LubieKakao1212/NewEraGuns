@@ -3,10 +3,13 @@ package com.LubieKakao1212.neguns.data;
 import com.LubieKakao1212.neguns.capability.gun.IGun;
 import com.LubieKakao1212.neguns.expression.MultiTypeEvaluator;
 import com.LubieKakao1212.neguns.gun.component.IGunComponent;
+import com.LubieKakao1212.neguns.item.GunItem;
 import com.LubieKakao1212.neguns.resources.NEGunsDataCache;
 import com.LubieKakao1212.qulib.util.entity.EntityChain;
 import com.fathzer.soft.javaluator.AbstractEvaluator;
 import com.google.gson.annotations.SerializedName;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib3.core.AnimationState;
@@ -59,24 +62,21 @@ public class GunTypeInfo implements IAnimatable, ISyncable {
         return evaluator = (useJs ? null : new MultiTypeEvaluator());
     }
 
-    public void trigger(ItemStack gunStack, EntityChain entityChain, IGun gun) {
-        gun.applyProvidedState();
-        trigger.executeAction(gunStack, entityChain, gun);
+    public boolean trigger(ItemStack gunStack, EntityChain entityChain, IGun gun) {
+        return trigger(trigger, gunStack, entityChain, gun);
     }
 
-    public void triggerHold(ItemStack gunStack, EntityChain entityChain, IGun gun) {
+    public boolean triggerHold(ItemStack gunStack, EntityChain entityChain, IGun gun) {
         if(triggerHold == null) {
-            trigger(gunStack, entityChain, gun);
+            return trigger(trigger, gunStack, entityChain, gun);
         }else
         {
-            gun.applyProvidedState();
-            triggerHold.executeAction(gunStack, entityChain, gun);
+            return trigger(triggerHold, gunStack, entityChain, gun);
         }
     }
 
-    public void setTriggerRelease(ItemStack gunStack, EntityChain entityChain, IGun gun) {
-        gun.applyProvidedState();
-        triggerRelease.executeAction(gunStack, entityChain, gun);
+    public boolean triggerRelease(ItemStack gunStack, EntityChain entityChain, IGun gun) {
+        return trigger(triggerRelease, gunStack, entityChain, gun);
     }
 
     public void setModel(ResourceLocation modelLocation) {
@@ -102,4 +102,31 @@ public class GunTypeInfo implements IAnimatable, ISyncable {
             controller.setAnimation(new AnimationBuilder().addAnimation(NEGunsDataCache.GUN_ANIMATIONS.getName(state)));
         }
     }
+
+    private boolean trigger(IGunComponent rootComponent, ItemStack gunStack, EntityChain entityChain, IGun gun) {
+        CompoundTag stateTag = null;
+        if(gunStack.hasTag()) {
+            stateTag = gunStack.getTag();
+        }
+
+        if(stateTag != null &&stateTag.contains(GunItem.STATE_NBT_KEY, Tag.TAG_COMPOUND)) {
+                gun.getState().deserializeNBT(gunStack.getTag().getCompound(GunItem.STATE_NBT_KEY));
+            }
+        else {
+            gun.getState().clear();
+        }
+
+        gun.applyProvidedState();
+        rootComponent.executeAction(gunStack, entityChain, gun);
+
+        //TODO Constantify key
+        Object result = gun.getState().get("continue");
+
+        if(stateTag != null) {
+            stateTag.put(GunItem.STATE_NBT_KEY, gun.getState().serializeNBT());
+        }
+
+        return result instanceof Boolean ? ((Boolean)result) : true;
+    }
+
 }

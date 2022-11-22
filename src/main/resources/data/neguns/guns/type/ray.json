@@ -9,21 +9,23 @@
         {
             "type": "neguns:scatter",
             "base-direction": "north",
-            "output-variable": "tDir",
+            "output-variable": "h:dir",
             "roll": "random(0, pi*2)",
-            "angle": "random(0, pi/2)"
-        },
+            "angle": "random(0, pi/6)"
+        }
+    ],
+    "trigger-hold": [
         {
             "type": "neguns:ray",
-            "direction": "tDir",
+            "direction": "h:dir",
             "pierce": 10,
             "target-filter": 3,
-            "distance": 7,
+            "distance": 100,
             "variable-scope": "ray1",
             "hit-block": [
                 {
                     "type": "neguns:explode",
-                    "strength": "pierce",
+                    "strength": 1,
                     "position": "hit_point"
                 },
                 {
@@ -50,5 +52,8 @@
             ]
         }
     ],
-    "trigger-hold": []
+    "trigger-release": {
+        "type": "neguns:debug",
+        "message": "end"
+    }
 }

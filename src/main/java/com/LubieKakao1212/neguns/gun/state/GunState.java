@@ -1,5 +1,6 @@
 package com.LubieKakao1212.neguns.gun.state;
 
+import com.LubieKakao1212.neguns.expression.EvaluationException;
 import com.fathzer.soft.javaluator.AbstractVariableSet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -7,48 +8,60 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
+/**
+ *  Supported variable types:
+ *      Double,
+ *      Vector3d,
+ *      Quaterniond
+ *      UUID
+ */
 public class GunState implements AbstractVariableSet<Object>, INBTSerializable<CompoundTag> {
 
     public static final String PERMANENT_KEY = "permanent";
     public static final String HOLD_KEY = "hold";
 
-    public static final String PERM_VAR_REGEX = "(p[A-Z]\\w+)";
-    public static final String HOLD_VAR_REGEX = "(h[A-Z]\\w+)";
-    public static final String TEMP_VAR_REGEX = "(t[A-Z]\\w+)";
+    public static final String PERM_VAR_REGEX = "(p:\\w+)";
+    public static final String HOLD_VAR_REGEX = "(h:\\w+)";
+    public static final String TEMP_VAR_REGEX = "(t:\\w+)";
+
+    public static final String PERM_PREFIX = "p";
+    public static final String HOLD_PREFIX = "h";
+    public static final String TEMP_PREFIX = "t";
 
     //TODO Variable scopes
 
     /**
      * Permanent variables are stored until they are explicitly changed or removed
-     * They can be only numeric (for now)
      */
-    private HashMap<String, Double> permanentVars = new HashMap<>();
+    private final HashMap<String, StateVariable> permanentVars = new HashMap<>();
 
     /**
      * Hold variables are stored until gun stops shooting
-     * They can be only numeric (for now)
      */
-    private HashMap<String, Double> holdVars = new HashMap<>();
+    private final HashMap<String, StateVariable> holdVars = new HashMap<>();
 
     /**
      * Temporary variables are stored only for one tick
-     * They can be of any type not only numeric
      */
-    private HashMap<String, Object> temporaryVars = new HashMap<>();
+    private final HashMap<String, StateVariable> temporaryVars = new HashMap<>();
 
-    public void put(String key, Double value) {
-        if(key.matches(PERM_VAR_REGEX)) {
-            putPermanent(key, value);
-        }else if(key.matches(HOLD_VAR_REGEX))
-        {
-            putPermanent(key, value);
-        }else if(key.matches(TEMP_VAR_REGEX))
-        {
+    private final Stack<String> prefixScopes = new Stack<>();
+
+    public void put(String key, Object value) {
+        String[] split = splitDestination(key);
+        if(split[0] == null) {
             putTemporary(key, value);
-        }else
-        {
-            putTemporary(key, value);
+        }
+        else {
+            String bucket = split[0];
+            switch (bucket) {
+                case PERM_PREFIX -> putPermanent(key, value);
+                case HOLD_PREFIX -> putHold(key, value);
+                case TEMP_PREFIX -> putTemporary(key, value);
+                default -> throw new EvaluationException("Invalid variable designation prefix: " + bucket);
+            }
         }
     }
 
@@ -58,7 +71,7 @@ public class GunState implements AbstractVariableSet<Object>, INBTSerializable<C
      * @param value
      */
     public void putTemporary(String key, Object value) {
-        temporaryVars.put(key, value);
+        put(temporaryVars, key, value);
     }
 
     /**
@@ -66,8 +79,8 @@ public class GunState implements AbstractVariableSet<Object>, INBTSerializable<C
      * @param key
      * @param value
      */
-    public void putHold(String key, Double value) {
-        holdVars.put(key, value);
+    public void putHold(String key, Object value) {
+        put(holdVars, key, value);
     }
 
     /**
@@ -75,20 +88,48 @@ public class GunState implements AbstractVariableSet<Object>, INBTSerializable<C
      * @param key
      * @param value
      */
-    public void putPermanent(String key, Double value) {
-        permanentVars.put(key, value);
+    public void putPermanent(String key, Object value) {
+        put(permanentVars, key, value);
+    }
+
+    public void pushScope(String scope) {
+        prefixScopes.push(scope);
+    }
+
+    public void popScope(String scope) {
+        if(!prefixScopes.pop().equals(scope)) throw new EvaluationException("Imbalanced scopes");
     }
 
     @Override
-    public Object get(String s) {
-        Object v = temporaryVars.get(s);
-        /*Double v = null;
-        if(tmpV instanceof Double) {
-            v = (Double)tmpV;
-        }*/
-        if(v == null) v = holdVars.get(s);
-        if(v == null) v = permanentVars.get(s);
-        return v;
+    public Object get(String key) {
+        String[] split = splitDestination(key);
+        if(split[0] == null) {
+            key = appendScope(split[1]);
+            StateVariable v = temporaryVars.get(key);
+            if(v == null) v = holdVars.get(key);
+            if(v == null) v = permanentVars.get(key);
+            if(v == null) return null;
+            return v.getValue();
+        }
+
+        key = appendScope(split[1]);
+
+        String bucket = split[0];
+        StateVariable var = switch (bucket) {
+            case PERM_PREFIX -> permanentVars.get(key);
+            case HOLD_PREFIX -> holdVars.get(key);
+            case TEMP_PREFIX -> temporaryVars.get(key);
+            default -> throw new EvaluationException("Invalid variable designation prefix: " + bucket);
+        };
+
+        return var != null ?  var.getValue() : null;
+    }
+
+    public void clear() {
+        permanentVars.clear();
+        holdVars.clear();
+        temporaryVars.clear();
+        prefixScopes.clear();
     }
 
     @Override
@@ -96,13 +137,13 @@ public class GunState implements AbstractVariableSet<Object>, INBTSerializable<C
         CompoundTag serialized = new CompoundTag();
         CompoundTag permanent = new CompoundTag();
 
-        for(Map.Entry<String, Double> var : permanentVars.entrySet()) {
-            permanent.putDouble(var.getKey(), var.getValue());
+        for(Map.Entry<String, StateVariable> var : permanentVars.entrySet()) {
+            permanent.put(var.getKey(), var.getValue().serializeNBT());
         }
 
         CompoundTag hold = new CompoundTag();
-        for(Map.Entry<String, Double> var : holdVars.entrySet()) {
-            hold.putDouble(var.getKey(), var.getValue());
+        for(Map.Entry<String, StateVariable> var : holdVars.entrySet()) {
+            hold.put(var.getKey(), var.getValue().serializeNBT());
         }
 
         serialized.put(PERMANENT_KEY, permanent);
@@ -112,22 +153,60 @@ public class GunState implements AbstractVariableSet<Object>, INBTSerializable<C
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        permanentVars.clear();
-        holdVars.clear();
-        temporaryVars.clear();
+        clear();
 
         if(nbt.contains(PERMANENT_KEY, Tag.TAG_COMPOUND)) {
             CompoundTag tag = nbt.getCompound(PERMANENT_KEY);
             for (String key : tag.getAllKeys()) {
-                permanentVars.put(key, tag.getDouble(key));
+                StateVariable var = new StateVariable();
+                var.deserializeNBT(tag.getCompound(key));
+                permanentVars.put(key, var);
             }
         }
 
         if(nbt.contains(HOLD_KEY, Tag.TAG_COMPOUND)) {
             CompoundTag tag = nbt.getCompound(HOLD_KEY);
             for (String key : tag.getAllKeys()) {
-                holdVars.put(key, tag.getDouble(key));
+                StateVariable var = new StateVariable();
+                var.deserializeNBT(tag.getCompound(key));
+                holdVars.put(key, var);
             }
         }
     }
+
+    private void put(Map<String, StateVariable> destination, String key, Object value) {
+        destination.put(appendScope(key), new StateVariable(value));
+    }
+
+    private String appendScope(String id) {
+        String scope = null;
+        if(!prefixScopes.empty()){
+            scope = prefixScopes.peek();
+        }
+
+        if(scope == null)
+            return id;
+
+        String[] split = id.split(":", 2);
+        if(split.length == 1) {
+            return scope + ":" + id;
+        }
+
+        if(split[0].length() == 0) {
+            return scope + ":" + split[1];
+        }
+
+        return id;
+    }
+
+    private String[] splitDestination(String key) {
+        String[] split = key.split(":", 2);
+        if(split.length == 1) {
+            return new String[] { null, split[0] };
+        }
+        else if(split[0].length() == 0)
+            return new String[] { null, split[1] };
+        return split;
+    }
+
 }

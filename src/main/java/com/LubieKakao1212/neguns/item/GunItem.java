@@ -1,5 +1,6 @@
 package com.LubieKakao1212.neguns.item;
 
+import com.LubieKakao1212.neguns.NewEraGunsMod;
 import com.LubieKakao1212.neguns.capability.GunCapabilityProvider;
 import com.LubieKakao1212.neguns.capability.GunCaps;
 import com.LubieKakao1212.neguns.capability.gun.IGun;
@@ -41,6 +42,9 @@ import java.util.function.Consumer;
 
 public class GunItem extends Item implements IAnimatable, ISyncable {
 
+    public static final String STATE_NBT_KEY = "GunState";
+    public static final String GUN_TYPE_KEY = "GunType";
+
     public AnimationFactory factory = new AnimationFactory(this);
 
     public GunItem(Properties properties) {
@@ -53,13 +57,14 @@ public class GunItem extends Item implements IAnimatable, ISyncable {
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         if(stack.getTag() != null) {
             try {
-                ResourceLocation gunTypeId = new ResourceLocation(stack.getTag().getString("GunType"));
+                ResourceLocation gunTypeId = new ResourceLocation(stack.getTag().getString(GUN_TYPE_KEY));
                 if(nbt != null) {
                     nbt = nbt.getCompound("Parent");
                 }
                 return new GunCapabilityProvider(stack, gunTypeId, nbt);
             }
             catch(ResourceLocationException e) {
+                e.printStackTrace();
             }
         }
         return null;
@@ -137,14 +142,14 @@ public class GunItem extends Item implements IAnimatable, ISyncable {
         boolean[] flag = { false };
         if(level.isClientSide) {
             stack.getCapability(GunCaps.GUN).ifPresent((gun) -> {
-                player.startUsingItem(usedHand);
+                //player.startUsingItem(usedHand);
                 flag[0] = true;
             });
         }else {
             stack.getCapability(GunCaps.GUN).ifPresent(
                     (gun) -> {
                         player.startUsingItem(usedHand);
-                        gun.getGunType().trigger(stack, new EntityChain().add(player), gun);
+                        //gun.getGunType().trigger(stack, new EntityChain().add(player), gun);
                         flag[0] = true;
                     }
             );

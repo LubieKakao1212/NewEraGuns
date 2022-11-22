@@ -51,7 +51,7 @@ public class Scatter implements IGunComponent {
         Vector3d result = AimUtil.calculateForwardWithSpread(angle, roll, forward.get(state, evaluator));
 
         //TODO change to put()
-        state.putTemporary(outVar, result);
+        state.put(outVar, result);
 
         return true;
     }
