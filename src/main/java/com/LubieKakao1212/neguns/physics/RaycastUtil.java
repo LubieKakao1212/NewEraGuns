@@ -86,7 +86,7 @@ public class RaycastUtil {
             addIfValid(result, level, currentBlockPos, intersections);
 
             i++;
-            if(i > 100) {
+            if(i > 1000) {
                 NewEraGunsMod.LOGGER.info("Raycast reached block limit. Probably a loop");
                 return result;
             }

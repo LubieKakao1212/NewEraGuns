@@ -16,6 +16,13 @@
     ],
     "trigger-hold": [
         {
+            "type": "neguns:scatter",
+            "base-direction": "north",
+            "output-variable": "h:dir",
+            "roll": "random(0, pi*2)",
+            "angle": "random(0, pi/6)"
+        },
+        {
             "type": "neguns:ray",
             "direction": "h:dir",
             "pierce": 10,

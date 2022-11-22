@@ -25,6 +25,10 @@ public class StateVariables {
                 o -> DoubleTag.valueOf((Double)o),
                 tag -> tag instanceof DoubleTag ? ((DoubleTag) tag).getAsDouble() : null));
 
+        STATE_VARIABLE_TYPES.register("boolean", () -> StateVariable.makeType(Boolean.class,
+                o -> ByteTag.valueOf((Boolean) o),
+                tag -> tag instanceof ByteTag ? !tag.equals(ByteTag.ZERO) : null));
+
         STATE_VARIABLE_TYPES.register("vec3", () -> StateVariable.makeType(Vector3d.class,
                 o -> JomlNBT.writeVector3((Vector3d) o),
                 tag -> tag instanceof ListTag ? JomlNBT.readVector3((ListTag)tag) : null));

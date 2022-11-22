@@ -12,10 +12,8 @@ import com.LubieKakao1212.qulib.util.entity.EntityChain;
 import com.LubieKakao1212.qulib.util.joml.Vector3dUtil;
 import com.fathzer.soft.javaluator.AbstractEvaluator;
 import com.google.gson.annotations.SerializedName;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.HitResult;
 import org.joml.Vector3d;
 
 import java.util.List;

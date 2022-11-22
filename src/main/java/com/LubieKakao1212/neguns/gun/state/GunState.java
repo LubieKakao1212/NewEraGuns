@@ -9,6 +9,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.UUID;
 
 /**
  *  Supported variable types:
@@ -21,6 +22,7 @@ public class GunState implements AbstractVariableSet<Object>, INBTSerializable<C
 
     public static final String PERMANENT_KEY = "permanent";
     public static final String HOLD_KEY = "hold";
+    public static final String INSTANCE_ID_KEY = "gunInstanceId";
 
     public static final String PERM_VAR_REGEX = "(p:\\w+)";
     public static final String HOLD_VAR_REGEX = "(h:\\w+)";
@@ -49,8 +51,15 @@ public class GunState implements AbstractVariableSet<Object>, INBTSerializable<C
 
     private final Stack<String> prefixScopes = new Stack<>();
 
+    private UUID gunInstanceId;
+
+    public GunState() {
+        gunInstanceId = UUID.randomUUID();
+    }
+
     public void put(String key, Object value) {
         String[] split = splitDestination(key);
+        key = split[1];
         if(split[0] == null) {
             putTemporary(key, value);
         }
@@ -148,6 +157,7 @@ public class GunState implements AbstractVariableSet<Object>, INBTSerializable<C
 
         serialized.put(PERMANENT_KEY, permanent);
         serialized.put(HOLD_KEY, hold);
+        serialized.putUUID(INSTANCE_ID_KEY, gunInstanceId);
         return serialized;
     }
 
@@ -171,6 +181,13 @@ public class GunState implements AbstractVariableSet<Object>, INBTSerializable<C
                 var.deserializeNBT(tag.getCompound(key));
                 holdVars.put(key, var);
             }
+        }
+
+        if(nbt.contains(INSTANCE_ID_KEY, Tag.TAG_INT_ARRAY)) {
+            gunInstanceId = nbt.getUUID(INSTANCE_ID_KEY);
+        }
+        else {
+            gunInstanceId = UUID.randomUUID();
         }
     }
 
@@ -209,4 +226,7 @@ public class GunState implements AbstractVariableSet<Object>, INBTSerializable<C
         return split;
     }
 
+    public UUID getInstanceId() {
+        return gunInstanceId;
+    }
 }
