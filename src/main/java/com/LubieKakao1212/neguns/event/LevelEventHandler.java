@@ -68,36 +68,6 @@ public class LevelEventHandler {
         });
     }
 
-    //Fires to late
-    @SubscribeEvent
-    public static void onPlayerEquipmentChange(LivingEquipmentChangeEvent event) {
-        //TODO resolve
-        if(event.getSlot() == EquipmentSlot.MAINHAND) {
-            ItemStack heldStack = event.getEntityLiving().getUseItem();
-            ItemStack fromStack = event.getFrom();
-            ItemStack toStack = event.getTo();
-            final UUID[] heldGunId = new UUID[1];
-            final UUID[] fromGunId = new UUID[1];
-            final UUID[] toGunId = new UUID[1];
-            heldStack.getCapability(GunCaps.GUN).ifPresent((gun) -> {
-                heldGunId[0] = gun.getState().getInstanceId();
-            });
-            fromStack.getCapability(GunCaps.GUN).ifPresent((gun) -> {
-                fromGunId[0] = gun.getState().getInstanceId();
-            });
-            toStack.getCapability(GunCaps.GUN).ifPresent((gun) -> {
-                toGunId[0] = gun.getState().getInstanceId();
-            });
-            if(heldGunId[0] == null || fromGunId[0] == null)
-            {
-                return;
-            }
-            if(fromGunId[0].equals(heldGunId[0]) && !fromGunId[0].equals(toGunId[0])) {
-                event.getEntityLiving().releaseUsingItem();
-            }
-        }
-    }
-
     private static <T extends LivingEvent> void handle(T event, ItemStack usedItem, TriggerAction<T> action) {
         LivingEntity entity = event.getEntityLiving();
 
