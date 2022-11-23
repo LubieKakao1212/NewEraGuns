@@ -5,6 +5,7 @@ import com.LubieKakao1212.neguns.gun.component.IGunComponent;
 import com.LubieKakao1212.neguns.gun.state.GunState;
 import com.LubieKakao1212.qulib.util.entity.EntityChain;
 import com.fathzer.soft.javaluator.AbstractEvaluator;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -15,9 +16,9 @@ public class NonTerminalSequence implements IGunComponent {
     private List<IGunComponent> sequence = new ArrayList<>();
 
     @Override
-    public boolean executeAction(ItemStack gunStack, EntityChain entityChain, IGun gun) {
+    public boolean executeAction(ItemStack gunStack, LivingEntity caster, IGun gun) {
         for (IGunComponent cmp : sequence) {
-            cmp.executeAction(gunStack, entityChain, gun);
+            cmp.executeAction(gunStack, caster, gun);
         }
         return true;
     }

@@ -24,7 +24,8 @@
         },
         {
             "type": "neguns:ray",
-            "direction": "h:dir",
+            "origin": ":caster:eye_pos",
+            "direction": ":caster:aim",
             "pierce": 10,
             "target-filter": 3,
             "distance": 100,

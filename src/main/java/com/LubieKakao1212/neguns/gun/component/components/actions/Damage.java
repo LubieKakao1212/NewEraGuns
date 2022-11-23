@@ -20,7 +20,7 @@ public class Damage implements IGunComponent {
     private String targetEntity;
 
     @Override
-    public boolean executeAction(ItemStack gunStack, EntityChain entityChain, IGun gun) {
+    public boolean executeAction(ItemStack gunStack, LivingEntity caster, IGun gun) {
         GunState state = gun.getState();
 
         Object var = state.get(targetEntity);

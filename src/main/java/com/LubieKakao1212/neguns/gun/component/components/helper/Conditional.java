@@ -7,6 +7,7 @@ import com.LubieKakao1212.neguns.gun.state.GunState;
 import com.LubieKakao1212.qulib.util.entity.EntityChain;
 import com.fathzer.soft.javaluator.AbstractEvaluator;
 import com.google.gson.annotations.SerializedName;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,9 +22,9 @@ public class Conditional implements IGunComponent {
     private IGunComponent fail = new FallbackComponent();
 
     @Override
-    public boolean executeAction(ItemStack gun, EntityChain entityChain, IGun state) {
-        if (!condition.executeAction(gun, entityChain, state))
-            return fail.executeAction(gun, entityChain, state);
-        return success.executeAction(gun, entityChain, state);
+    public boolean executeAction(ItemStack gun, LivingEntity caster, IGun state) {
+        if (!condition.executeAction(gun, caster, state))
+            return fail.executeAction(gun, caster, state);
+        return success.executeAction(gun, caster, state);
     }
 }

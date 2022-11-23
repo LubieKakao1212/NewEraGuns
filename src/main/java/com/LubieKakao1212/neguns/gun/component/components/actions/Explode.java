@@ -9,6 +9,7 @@ import com.LubieKakao1212.qulib.util.entity.EntityChain;
 import com.fathzer.soft.javaluator.AbstractEvaluator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import org.joml.Vector3d;
@@ -22,13 +23,13 @@ public class Explode implements IGunComponent {
     private boolean fire = false;
 
     @Override
-    public boolean executeAction(ItemStack gunStack, EntityChain entityChain, IGun gun) {
+    public boolean executeAction(ItemStack gunStack, LivingEntity caster, IGun gun) {
         if(position == null) {
-            entityChain.first().sendMessage(Component.nullToEmpty("Explosion position must be set"), entityChain.first().getUUID());
+            caster.sendMessage(Component.nullToEmpty("Explosion position must be set"), caster.getUUID());
             return false;
         }
         if(strength == null) {
-            entityChain.first().sendMessage(Component.nullToEmpty("Explosion strength must be set"), entityChain.first().getUUID());
+            caster.sendMessage(Component.nullToEmpty("Explosion strength must be set"), caster.getUUID());
             return false;
         }
 
@@ -38,7 +39,7 @@ public class Explode implements IGunComponent {
         Vector3d pos = position.get(state, evaluator);
         Double size = strength.get(state, evaluator);
 
-        entityChain.first().getLevel().explode(entityChain.first(), null,null, pos.x(), pos.y(), pos.z(), size.floatValue(), fire, Explosion.BlockInteraction.DESTROY);
+        caster.getLevel().explode(caster, null,null, pos.x(), pos.y(), pos.z(), size.floatValue(), fire, Explosion.BlockInteraction.DESTROY);
 
         return true;
     }

@@ -13,6 +13,7 @@ import com.LubieKakao1212.qulib.util.joml.Vector3dUtil;
 import com.fathzer.soft.javaluator.AbstractEvaluator;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3d;
 
@@ -46,14 +47,14 @@ public class RaycastAction implements IGunComponent {
     private String scope = null;
 
     @Override
-    public boolean executeAction(ItemStack gunStack, EntityChain entityChain, IGun gun) {
+    public boolean executeAction(ItemStack gunStack, LivingEntity entityChain, IGun gun) {
 
         AbstractEvaluator evaluator = gun.getGunType().getEvaluator();
         GunState state = gun.getState();
 
-        Raycast raycast = new Raycast.Builder(Raycast.Target.fromMask(targetFilter)).setSorted(true).build();
+        Raycast raycast = new Raycast.Builder(Raycast.Target.fromMask(targetFilter)).setSorted(true).addPierceHandler(hit -> 0).build();
 
-        List<RaycastHit> hits = raycast.perform(entityChain.first().level, origin.get(state, evaluator), direction.get(state, evaluator), distance.get(state, evaluator));
+        List<RaycastHit> hits = raycast.perform(entityChain.level, origin.get(state, evaluator), direction.get(state, evaluator), distance.get(state, evaluator));
 
         if(scope != null) {
             state.pushScope(scope);

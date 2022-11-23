@@ -11,6 +11,7 @@ import com.google.gson.annotations.SerializedName;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -62,21 +63,21 @@ public class GunTypeInfo implements IAnimatable, ISyncable {
         return evaluator = (useJs ? null : new MultiTypeEvaluator());
     }
 
-    public boolean trigger(ItemStack gunStack, EntityChain entityChain, IGun gun) {
-        return trigger(trigger, gunStack, entityChain, gun);
+    public boolean trigger(ItemStack gunStack, LivingEntity caster, IGun gun) {
+        return trigger(trigger, gunStack, caster, gun);
     }
 
-    public boolean triggerHold(ItemStack gunStack, EntityChain entityChain, IGun gun) {
+    public boolean triggerHold(ItemStack gunStack, LivingEntity caster, IGun gun) {
         if(triggerHold == null) {
-            return trigger(trigger, gunStack, entityChain, gun);
+            return trigger(trigger, gunStack, caster, gun);
         }else
         {
-            return trigger(triggerHold, gunStack, entityChain, gun);
+            return trigger(triggerHold, gunStack, caster, gun);
         }
     }
 
-    public boolean triggerRelease(ItemStack gunStack, EntityChain entityChain, IGun gun) {
-        return trigger(triggerRelease, gunStack, entityChain, gun);
+    public boolean triggerRelease(ItemStack gunStack, LivingEntity caster, IGun gun) {
+        return trigger(triggerRelease, gunStack, caster, gun);
     }
 
     public void setModel(ResourceLocation modelLocation) {
@@ -103,28 +104,30 @@ public class GunTypeInfo implements IAnimatable, ISyncable {
         }
     }
 
-    private boolean trigger(IGunComponent rootComponent, ItemStack gunStack, EntityChain entityChain, IGun gun) {
-        CompoundTag stateTag = null;
+    private boolean trigger(IGunComponent rootComponent, ItemStack gunStack, LivingEntity caster, IGun gun) {
+        CompoundTag stackTag = null;
         if(gunStack.hasTag()) {
-            stateTag = gunStack.getTag();
+            stackTag = gunStack.getTag();
         }
 
-        if(stateTag != null &&stateTag.contains(GunItem.STATE_NBT_KEY, Tag.TAG_COMPOUND)) {
+        if(stackTag != null &&stackTag.contains(GunItem.STATE_NBT_KEY, Tag.TAG_COMPOUND)) {
                 gun.getState().deserializeNBT(gunStack.getTag().getCompound(GunItem.STATE_NBT_KEY));
             }
         else {
             gun.getState().clear();
         }
 
-        gun.applyProvidedState();
-        rootComponent.executeAction(gunStack, entityChain, gun);
+        gun.applyProvidedState(caster);
+        rootComponent.executeAction(gunStack, caster, gun);
 
         //TODO Constantify key
         Object result = gun.getState().get("continue");
 
-        if(stateTag != null) {
-            stateTag.put(GunItem.STATE_NBT_KEY, gun.getState().serializeNBT());
+        if(stackTag != null) {
+            stackTag.put(GunItem.STATE_NBT_KEY, gun.getState().serializeNBT());
         }
+
+        gunStack.setTag(stackTag);
 
         return result instanceof Boolean ? ((Boolean)result) : true;
     }

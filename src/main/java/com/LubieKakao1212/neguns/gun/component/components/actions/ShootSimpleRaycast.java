@@ -29,13 +29,12 @@ public class ShootSimpleRaycast implements IGunComponent {
     private transient Raycast raycast = null;
 
     @Override
-    public boolean executeAction(ItemStack gunStack, EntityChain entityChain, IGun gun) {
-        Entity caster = entityChain.first();
+    public boolean executeAction(ItemStack gunStack, LivingEntity caster, IGun gun) {
         Vector3d position = Vector3dUtil.of(caster.getEyePosition());
 
         if(raycast == null) {
             raycast = new Raycast.Builder(Raycast.Target.Both).setSorted(true).addFilter(Raycast.Filters.entitySubClass(LivingEntity.class))
-                    .addFilter(Raycast.Filters.entity((hit) -> hit.target() != entityChain.first()))
+                    .addFilter(Raycast.Filters.entity((hit) -> hit.target() != caster))
                     .setPierce(pierce.get(gun.getState(), gun.getGunType().getEvaluator()).intValue())
                     .addPierceHandler(hit -> hit.target() instanceof BlockStatePos ? 1000 : 1)
                     .build();
@@ -46,7 +45,7 @@ public class ShootSimpleRaycast implements IGunComponent {
 
         for (RaycastHit hit : raycastResults) {
             if(hit.target() instanceof LivingEntity) {
-                ((LivingEntity) hit.target()).hurt(DamageSource.mobAttack((LivingEntity) entityChain.first()), damage.get(gun.getState(), gun.getGunType().getEvaluator()).floatValue());
+                ((LivingEntity) hit.target()).hurt(DamageSource.mobAttack(caster), damage.get(gun.getState(), gun.getGunType().getEvaluator()).floatValue());
             }
         }
         return true;

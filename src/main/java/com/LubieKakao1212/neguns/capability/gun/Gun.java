@@ -4,8 +4,12 @@ import com.LubieKakao1212.neguns.data.AllTheData;
 import com.LubieKakao1212.neguns.data.GunTypeInfo;
 import com.LubieKakao1212.neguns.gun.state.GunState;
 import com.LubieKakao1212.neguns.gun.state.IGunStateProvider;
+import com.LubieKakao1212.qulib.math.AimUtil;
+import com.LubieKakao1212.qulib.math.MathUtil;
+import com.LubieKakao1212.qulib.util.joml.Vector3dUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.HashSet;
@@ -26,11 +30,19 @@ public class Gun implements IGun, INBTSerializable<CompoundTag> {
         return type;
     }
 
-    public void applyProvidedState() {
+    @Override
+    public void applyProvidedState(LivingEntity caster) {
         for(IGunStateProvider provider : stateProviders)
         {
             provider.addVariables(state);
         }
+        state.pushScope("caster");
+
+        state.putTemporary("pos", Vector3dUtil.of(caster.position()));
+        state.putTemporary("eye_pos", Vector3dUtil.of(caster.getEyePosition()));
+        state.putTemporary("aim", Vector3dUtil.of(caster.getLookAngle()));
+
+        state.popScope("caster");
     }
 
     public void registerStateProvider(IGunStateProvider provider) {

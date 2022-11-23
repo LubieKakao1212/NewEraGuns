@@ -6,6 +6,7 @@ import com.LubieKakao1212.neguns.data.util.condition.IntCondition;
 import com.LubieKakao1212.neguns.gun.state.GunState;
 import com.LubieKakao1212.qulib.util.entity.EntityChain;
 import com.fathzer.soft.javaluator.AbstractEvaluator;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -21,7 +22,7 @@ public class FEAmountCondition implements IGunComponent {
     }
 
     @Override
-    public boolean executeAction(ItemStack gunStack, EntityChain entityChain, IGun gun) {
+    public boolean executeAction(ItemStack gunStack, LivingEntity caster, IGun gun) {
         LazyOptional<IEnergyStorage> energy = gunStack.getCapability(CapabilityEnergy.ENERGY);
 
         final boolean[] flag = { false };

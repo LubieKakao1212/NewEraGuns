@@ -8,6 +8,7 @@ import com.LubieKakao1212.neguns.gun.state.GunState;
 import com.LubieKakao1212.qulib.capability.energy.InternalEnergyStorage;
 import com.LubieKakao1212.qulib.util.entity.EntityChain;
 import com.fathzer.soft.javaluator.AbstractEvaluator;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -18,7 +19,7 @@ public class FEDrain implements IGunComponent {
     private DoubleOrExpression amount = new DoubleOrExpression();
 
     @Override
-    public boolean executeAction(ItemStack gunStack, EntityChain entityChain, IGun gun) {
+    public boolean executeAction(ItemStack gunStack, LivingEntity caster, IGun gun) {
         LazyOptional<IEnergyStorage> energyCapability = gunStack.getCapability(CapabilityEnergy.ENERGY);
         if(energyCapability.isPresent()) {
             IEnergyStorage energyStorage = energyCapability.resolve().get();

@@ -11,6 +11,7 @@ import com.LubieKakao1212.qulib.util.joml.Vector3dUtil;
 import com.fathzer.soft.javaluator.AbstractEvaluator;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Math;
 import org.joml.Vector3d;
@@ -28,7 +29,7 @@ public class Scatter implements IGunComponent {
     private DoubleOrExpression angle = null;
 
     @Override
-    public boolean executeAction(ItemStack gunStack, EntityChain entityChain, IGun gun) {
+    public boolean executeAction(ItemStack gunStack, LivingEntity caster, IGun gun) {
         AbstractEvaluator evaluator = gun.getGunType().getEvaluator();
         GunState state = gun.getState();
 
@@ -42,7 +43,7 @@ public class Scatter implements IGunComponent {
         }
 
         if(this.angle == null) {
-            entityChain.first().sendMessage(Component.nullToEmpty("Scatter angle must be set"), entityChain.first().getUUID());
+            caster.sendMessage(Component.nullToEmpty("Scatter angle must be set"), caster.getUUID());
             return false;
         }
 
@@ -50,7 +51,6 @@ public class Scatter implements IGunComponent {
 
         Vector3d result = AimUtil.calculateForwardWithSpread(angle, roll, forward.get(state, evaluator));
 
-        //TODO change to put()
         state.put(outVar, result);
 
         return true;
