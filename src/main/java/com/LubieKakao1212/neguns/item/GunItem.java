@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.client.RenderProperties;
@@ -136,29 +137,42 @@ public class GunItem extends Item implements IAnimatable, ISyncable {
     }
 
     @Override
+    public UseAnim getUseAnimation(ItemStack pStack) {
+        return UseAnim.NONE;
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        final boolean[] flag = new boolean[1];
+        oldStack.getCapability(GunCaps.GUN).ifPresent((oldGun) -> {
+            newStack.getCapability(GunCaps.GUN).ifPresent((newGun) -> {
+                flag[0] = oldGun.getState().getInstanceId().equals(newGun.getState().getInstanceId());
+            });
+        });
+
+        return !flag[0];
+    }
+
+    @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
 
         boolean[] flag = { false };
-        if(level.isClientSide) {
-            stack.getCapability(GunCaps.GUN).ifPresent((gun) -> {
-                //player.startUsingItem(usedHand);
-                flag[0] = true;
-            });
-        }else {
+        if(!level.isClientSide) {
             stack.getCapability(GunCaps.GUN).ifPresent(
                     (gun) -> {
                         player.startUsingItem(usedHand);
-                        //gun.getGunType().trigger(stack, new EntityChain().add(player), gun);
                         flag[0] = true;
                     }
             );
         }
-        if(flag[0]) {
-            return InteractionResultHolder.pass(stack);
-        }else
-        {
-            return InteractionResultHolder.fail(stack);
+        if(level.isClientSide) {
+            return InteractionResultHolder.consume(stack);
         }
+        if(flag[0]) {
+            return InteractionResultHolder.consume(stack);
+        }
+
+        return InteractionResultHolder.fail(stack);
     }
 }
