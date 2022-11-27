@@ -75,13 +75,22 @@ public class GunItem extends Item implements IAnimatable, ISyncable {
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flags) {
         if(!stack.getCapability(GunCaps.GUN).isPresent()) {
             if(stack.hasTag()) {
-                tooltip.add(new TextComponent("Could not create gun: " + stack.getTag().getString("GunType")).withStyle(ChatFormatting.RED));
+                tooltip.add(new TextComponent("Could not create gun: " + stack.getTag().getString(GUN_TYPE_KEY)).withStyle(ChatFormatting.RED));
             }else
                 tooltip.add(new TextComponent("Could not create gun: missing tag").withStyle(ChatFormatting.RED));
         }
         if(flags.isAdvanced()){
             stack.getCapability(GunCaps.GUN).ifPresent(
-                    (gunType) -> tooltip.add(new TextComponent(gunType.getGunType().getModel().toString()))
+                    (gun) -> {
+                        tooltip.add(new TextComponent("Type def location: ")
+                                .append(new TextComponent(stack.getTag().getString(GUN_TYPE_KEY))
+                                        .withStyle(ChatFormatting.GREEN)));
+                        tooltip.add(new TextComponent("Model: ")
+                                .append(new TextComponent(gun.getGunType().getModel().toString())
+                                        .withStyle(ChatFormatting.GREEN)));
+                        tooltip.add(new TextComponent(gun.getState().getInstanceId().toString())
+                                        .withStyle(ChatFormatting.GRAY));
+                    }
             );
             stack.getCapability(CapabilityEnergy.ENERGY).ifPresent(
                     (energy) -> tooltip.add(new TextComponent(energy.getEnergyStored() + "/" + energy.getMaxEnergyStored()).setStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.AQUA))))
