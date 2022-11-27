@@ -1,5 +1,5 @@
 {
-    "model": "neguns:dual_potato",
+    "model": "neguns:potato",
     "animations": [
         "animation.dual_potato_cannon.shoot",
         "animation.dual_potato_cannon.fire",
@@ -57,8 +57,14 @@
             ]
         }
     ],
-    "trigger-release": {
-        "type": "neguns:debug",
-        "message": "end"
-    }
+    "trigger-release": [
+        {
+            "type": "neguns:debug",
+            "message": "end"
+        },
+        {
+            "type": "neguns:trigger_animation",
+            "animation": "animation.dual_potato_cannon.reload"
+        }
+    ]
 }

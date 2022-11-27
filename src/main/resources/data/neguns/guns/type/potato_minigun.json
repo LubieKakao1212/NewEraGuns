@@ -7,6 +7,10 @@
   ],
   "trigger": [
     {
+      "type": "neguns:trigger_animation",
+      "animation": "animation.dual_potato_cannon.reload"
+    },
+    {
       "type": "neguns:conditional",
       "condition": {
           "type":"neguns:fe_amount",
@@ -20,10 +24,6 @@
           "damage": 1,
           "range": 10,
           "pierce": 5
-        },
-        {
-          "type": "neguns:trigger_animation",
-          "animation": "animation.dual_potato_cannon.shoot"
         },
         {
           "type": "neguns:fe_drain",

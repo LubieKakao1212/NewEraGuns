@@ -26,24 +26,24 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GunTypeInfo implements IAnimatable, ISyncable {
-
-    private AnimationFactory factory = new AnimationFactory(this);
+public class GunTypeInfo implements IInvalidatable {
 
     private boolean useJs = false;
+
+    private boolean isValid = true;
 
     private String model = "";
 
     private transient ResourceLocation modelLocation;
 
     @SerializedName(value = "trigger", alternate = { "trigger-press" })
-    private IGunComponent trigger;
+    private IGunComponent trigger = null;
 
     @SerializedName("trigger-hold")
     private IGunComponent triggerHold = null;
 
     @SerializedName("trigger-release")
-    private IGunComponent triggerRelease;
+    private IGunComponent triggerRelease = null;
 
     public final List<String> animations = new ArrayList<>();
 
@@ -85,26 +85,18 @@ public class GunTypeInfo implements IAnimatable, ISyncable {
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 0, event -> PlayState.CONTINUE));
+    public void invalidate() {
+        isValid = false;
     }
 
-    @Override
-    public AnimationFactory getFactory() {
-        return this.factory;
-    }
-
-    @Override
-    public void onAnimationSync(int id, int state) {
-        final AnimationController controller = GeckoLibUtil.getControllerForID(this.factory, id, "controller");
-
-        if(controller.getAnimationState() == AnimationState.Stopped) {
-            controller.markNeedsReload();
-            controller.setAnimation(new AnimationBuilder().addAnimation(NEGunsDataCache.GUN_ANIMATIONS.getName(state)));
-        }
+    public boolean isValid() {
+        return isValid;
     }
 
     private boolean trigger(IGunComponent rootComponent, ItemStack gunStack, LivingEntity caster, IGun gun) {
+        if(rootComponent == null) {
+            return false;
+        }
         CompoundTag stackTag = null;
         if(gunStack.hasTag()) {
             stackTag = gunStack.getTag();
@@ -131,5 +123,4 @@ public class GunTypeInfo implements IAnimatable, ISyncable {
 
         return result instanceof Boolean ? ((Boolean)result) : true;
     }
-
 }

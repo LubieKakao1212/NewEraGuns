@@ -29,6 +29,13 @@ public class DataCache<T> extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceMap, ResourceManager resourceLocation, ProfilerFiller profiler) {
+        if(content != null) {
+            content.forEach((id, entry) -> {
+                if (entry instanceof IInvalidatable) {
+                    ((IInvalidatable) entry).invalidate();
+                }
+            });
+        }
         content = resourceMap.entrySet().stream().collect(Collectors.toMap((entry) -> entry.getKey(),(entry) -> gson.fromJson(entry.getValue(), dataType)));
     }
 

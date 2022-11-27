@@ -17,16 +17,25 @@ import java.util.Set;
 
 public class Gun implements IGun, INBTSerializable<CompoundTag> {
 
-    private GunTypeInfo type;
+    private ResourceLocation typeId;
+    private GunTypeInfo type = null;
     private Set<IGunStateProvider> stateProviders = new HashSet<>();
     private GunState state = new GunState();
 
     public Gun(ResourceLocation typeId) {
+        this.typeId = typeId;
+    }
+
+    public void acquireGunType() {
+        //TODO refresh stack capabilities
         type = AllTheData.gunTypes.getOrDefault(typeId, AllTheData.DEFAULT_GUN_TYPE);
     }
 
     @Override
     public GunTypeInfo getGunType() {
+        if(type == null || !type.isValid()) {
+            acquireGunType();
+        }
         return type;
     }
 
