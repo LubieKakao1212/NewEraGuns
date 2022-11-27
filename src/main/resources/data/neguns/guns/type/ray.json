@@ -7,17 +7,14 @@
     ],
     "trigger": [
         {
-            "type": "neguns:scatter",
-            "base-direction": "north",
-            "output-variable": "h:dir",
-            "roll": "random(0, pi*2)",
-            "angle": "random(0, pi/6)"
+            "type": "neguns:debug",
+            "message": "begin"
         }
     ],
     "trigger-hold": [
         {
             "type": "neguns:scatter",
-            "base-direction": "north",
+            "base-direction": ":caster:aim",
             "output-variable": "h:dir",
             "roll": "random(0, pi*2)",
             "angle": "random(0, pi/6)"
@@ -25,7 +22,7 @@
         {
             "type": "neguns:ray",
             "origin": ":caster:eye_pos",
-            "direction": ":caster:aim",
+            "direction": "h:dir",
             "pierce": 10,
             "target-filter": 3,
             "distance": 100,

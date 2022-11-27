@@ -47,14 +47,14 @@ public class RaycastAction implements IGunComponent {
     private String scope = null;
 
     @Override
-    public boolean executeAction(ItemStack gunStack, LivingEntity entityChain, IGun gun) {
+    public boolean executeAction(ItemStack gunStack, LivingEntity caster, IGun gun) {
 
         AbstractEvaluator evaluator = gun.getGunType().getEvaluator();
         GunState state = gun.getState();
 
         Raycast raycast = new Raycast.Builder(Raycast.Target.fromMask(targetFilter)).setSorted(true).addPierceHandler(hit -> 0).build();
 
-        List<RaycastHit> hits = raycast.perform(entityChain.level, origin.get(state, evaluator), direction.get(state, evaluator), distance.get(state, evaluator));
+        List<RaycastHit> hits = raycast.perform(caster.level, origin.get(state, evaluator), direction.get(state, evaluator), distance.get(state, evaluator));
 
         if(scope != null) {
             state.pushScope(scope);
@@ -68,13 +68,15 @@ public class RaycastAction implements IGunComponent {
                 //TODO change to put()
                 state.putTemporary("hit_blockPos", Vector3dUtil.of(pos.pos()));
                 //TODO add blockState
-                blockHitAction.executeAction(gunStack, entityChain, gun);
+                blockHitAction.executeAction(gunStack, caster, gun);
             }
             else if(hit.target() instanceof Entity) {
                 Entity entity = (Entity) hit.target();
-                //TODO change to put()
+                if(entity == caster)
+                    continue;
+                //Entities can only be stored as temporary vars
                 state.putTemporary("hit_entity", entity);
-                entityHitAction.executeAction(gunStack, entityChain, gun);
+                entityHitAction.executeAction(gunStack, caster, gun);
             }
 
             if(((Double)state.get("pierce")) <= 0.) {
