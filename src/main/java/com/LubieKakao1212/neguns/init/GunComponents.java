@@ -11,6 +11,7 @@ import com.LubieKakao1212.neguns.gun.component.components.helper.NonTerminalSequ
 import com.LubieKakao1212.neguns.gun.component.components.helper.debug.PrintMessage;
 import com.LubieKakao1212.neguns.gun.component.components.helper.math.Scatter;
 import com.LubieKakao1212.neguns.gun.component.components.visual.Animate;
+import com.LubieKakao1212.neguns.gun.component.components.visual.Particle;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
 
@@ -23,6 +24,7 @@ public class GunComponents {
         GUN_COMPONENTS.register("debug", () -> GunComponentType.create(PrintMessage.class));
 
         GUN_COMPONENTS.register("trigger_animation", () -> GunComponentType.create(Animate.class));
+        GUN_COMPONENTS.register("beam_particle", () -> GunComponentType.create(Particle.class));
 
         GUN_COMPONENTS.register("fe_amount", () -> GunComponentType.create(FEAmountCondition.class));
         GUN_COMPONENTS.register("fe_drain", () -> GunComponentType.create(FEDrain.class));

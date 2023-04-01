@@ -10,6 +10,6 @@ import net.minecraft.world.item.ItemStack;
 
 public interface IGunComponent {
 
-    boolean executeAction(ItemStack gunStack, LivingEntity entityChain, IGun gun);
+    boolean executeAction(ItemStack gunStack, LivingEntity caster, IGun gun);
 
 }

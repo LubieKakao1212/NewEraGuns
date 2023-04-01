@@ -1,5 +1,6 @@
 package com.LubieKakao1212.neguns.event;
 
+import com.LubieKakao1212.neguns.NewEraGunsMod;
 import com.LubieKakao1212.neguns.capability.GunCaps;
 import com.LubieKakao1212.neguns.capability.gun.IGun;
 import com.LubieKakao1212.neguns.data.GunTypeInfo;
@@ -13,7 +14,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid = NewEraGunsMod.MODID)
 public class LevelEventHandler {
 
     @SubscribeEvent

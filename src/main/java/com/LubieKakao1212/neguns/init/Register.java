@@ -13,6 +13,7 @@ public class Register {
         Items.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         GunComponents.GUN_COMPONENTS.register(FMLJavaModLoadingContext.get().getModEventBus());
         StateVariables.STATE_VARIABLE_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        Particles.PARTICLE_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     @SubscribeEvent
